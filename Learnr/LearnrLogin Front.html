@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Learnr Progress Tracker</title>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1>Learnr</h1>
     <form id="loginForm" action="/login" method="post">
-        <label for="username">Username:</label>
+        <label for="username">Email:</label>
         <input type="text" id="username" name="username" required><br><br>
 
         <label for="password">Password:</label>
@@ -17,11 +17,7 @@
         <button type="submit">Login</button>
         
         <!-- Display error message if present -->
-        <script>
-            if (typeof error !== 'undefined') {  
-                <p style="color: red;"></p>
-             }
-         </script>
+        <div id="message" style="color: red;"></div>
     </form>
 </body>
 </html>
