@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learnr Progress Tracker</title>
 </head>
+
 <body>
     <h1>Learnr</h1>
     <form id="loginForm" action="/login" method="post">
@@ -15,9 +17,18 @@
         <input type="password" id="password" name="password" required><br><br>
 
         <button type="submit">Login</button>
-        
+
         <!-- Display error message if present -->
         <div id="message" style="color: red;"></div>
     </form>
+    <script>
+        // This checks for any errors in the URL
+        const url = new URL(window.location.href);
+        const error = url.searchParams.get("error");
+        if (error) {
+            document.getElementById("message").innerText = error;
+        }
+    </script>
 </body>
+
 </html>
