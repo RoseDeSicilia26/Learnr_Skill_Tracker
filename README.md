@@ -1,6 +1,6 @@
-# LEARNR_SKILL_TRACKER
+# Learnr
 
-The LEARNR_SKILL_TRACKER is an application designed to manage user interactions, track skills, and provide seamless communication between the frontend and backend services. Built on Node.js, this system is efficient, scalable, and easy to use.
+The Learnr is an application designed to manage user interactions, track skills, and provide seamless communication between the frontend and backend services.
 
 ## Table of Contents
 
