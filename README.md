@@ -52,30 +52,30 @@ The application will start and run on localhost. Access the system via a web bro
 ```
 LEARNR_SKILL_TRACKER/
 │
-├── Learnr/
-│   ├── controllers/
-│   │   └── userController.js - Manages communication between user views and models.
-│   │
-│   ├── models/
-│   │   └── userModel.js - Handles user-related functions, primarily interacting with the CSV file.
-│   │
-│   ├── public/
-│   │   └── LearnrLogin.js - Frontend logic for user login, interacts with the userController.
-│   │
-│   ├── routes/
-│   │   └── authRoutes.js - Manages and routes incoming requests to their respective handlers.
-│   │
-│   └── views/
-│       ├── admin/
-│       │   └── supermentor.html - Represents the super mentor dashboard view.
-│       ├── mentee/
-│       │   └── mentee.html - Represents the mentee dashboard view.
-│       ├── mentor/
-│       │   └── mentor.html - Represents the mentor dashboard view.
-│       ├── LearnrLogin Front.html - Main login view for the application.
-│       └── NewUserForm.html - Registration form view.
-│
-└── server.js - The main server file to initiate the application.
+|── Learnr/
+    ├── controllers/
+    │   └── userController.js - Manages communication between user views and models.
+    │
+    ├── models/
+    │   └── userModel.js - Handles user-related functions, primarily interacting with the CSV file.
+    │
+    ├── public/
+    │   └── LearnrLogin.js - Frontend logic for user login, interacts with the userController.
+    │
+    ├── routes/
+    │   └── authRoutes.js - Manages and routes incoming requests to their respective handlers.
+    │
+    |── views/
+    │       ├── admin/
+    │       │   └── supermentor.html - Represents the super mentor dashboard view.
+    │       ├── mentee/
+    │       │   └── mentee.html - Represents the mentee dashboard view.
+    │       ├── mentor/
+    │       │   └── mentor.html - Represents the mentor dashboard view.
+    │       ├── LearnrLogin Front.html - Main login view for the application.
+    │       └── NewUserForm.html - Registration form view.
+    │
+    └── server.js - The main server file to initiate the application.
 ```
 
 ## Function Descriptions
