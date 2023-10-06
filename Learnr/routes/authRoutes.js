@@ -39,4 +39,11 @@ router.get('/register', (req, res) => {
 
 router.post('/register', userController.register);
 
+router.get('/assign', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
+    res.sendFile(filePath);
+});
+
+router.post('/assign', userController.handlePathways);
+
 module.exports = router;

@@ -16,13 +16,28 @@ exports.checkuser = (username, password, callback) => {
             }
         })
         .on ('end', () => {
+            callback(found); //Returns (true/false) or in the case of it being true, returns the paermission type of the account.
+        });
+}
+
+exports.validateUsername = (username, callback) => {
+    let found = false;
+    const stream = fs.createReadStream('UserList.csv');
+    stream 
+        .pipe(csv())
+        .on('data', (row) => {
+            if (row.username === username) {
+                found = true;
+            }
+        })
+        .on ('end', () => {
             callback(found); //Returns (true/false)
         });
 }
 
 //Writes to the csv file with user input.
-exports.addUser = (newUsername, newPassword, userType, callback) => {
-    const csvLine = `${newUsername},${newPassword},${userType}\n`;
+exports.addUser = (newUsername, newPassword, userType, name, email, position, callback) => {
+    const csvLine = `${newUsername},${newPassword},${userType}, ${name}, ${email}, ${position}, \n`;
     fs.appendFile('UserList.csv', csvLine, (err) => {
         callback(err);
     });
@@ -42,4 +57,31 @@ exports.userExists = (newUsername, callback) => {
         .on('end', () => {
             callback(exists); //Returns (true/false)
         });
+}
+
+exports.getMentee = (mentorUsername, callback) => {
+
+    fs.readFile('Relationship.csv', 'utf8', (err, data) => {
+            // Read the CSV file
+
+        // Split the CSV data into lines
+        const lines = data.split('\n');
+    
+        // Initialize an array to store the separated strings
+        const menteeList = [];
+
+        // Iterate through the lines to find the specified value in the additional column
+        for (const line of lines) {
+
+            const parts = line.split('.');
+                const mentor = parts[0];
+                const mentee1 = parts[1];
+                const mentee2 = parts[2];
+
+                if (mentorUsername === mentor) {
+                    menteeList.push({ mentee1, mentee2});
+                    callback(menteeList);
+                }
+        }
+    })
 }
