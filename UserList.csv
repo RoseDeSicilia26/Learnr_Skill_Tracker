@@ -1,8 +1,8 @@
 username,password,permission
-user1,pass1,admin
-user2,pass2,mentor
-user3,pass3,mentee
-Roseyposey,password,mentee
-rdesi034@fiu.edu,password,admin
-rdesi034@fiu.edu,password,supermentor
-admin,asdf,admin
+admin1,pass1,admin
+mentor1,pass1,mentor
+mentee1,pass1,mentee
+mentor2,pass1,mentor
+mentee2,pass1,mentee
+mentee3,pass1,mentee
+

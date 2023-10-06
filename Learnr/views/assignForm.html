@@ -1,0 +1,43 @@
+<!--File that displays a page for registering a new user-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign a pathway</title>
+</head>
+
+<body>
+    <h1>Assign a Pathway</h1>
+    <form id="assign-form" action="/assign" method="post">
+        <label for="pathwayID">Pathway ID:</label>
+        <input type="text" id="pathwayID" name="pathwayID" required><br>
+
+        <label for="menteeUsername">Mentee Name:</label>
+        <input type="'text" id="menteeUsername" name="menteeUsername" required></textarea><br>
+
+        <input type="submit" value="Assign">
+        
+
+        <button onclick="location.href='/Mentor'">Return to Dashboard</button>
+
+        <!-- Display error message if present -->
+        <div id="message" style="color: red;"></div>
+        
+    </form>
+    <script src = "/Learnr/public/Pathways.js"></script>
+    <script>
+        if (performance.navigation.type === 1){
+        // This checks for any errors in the URL
+            const url = new URL(window.location.href);
+            const error = url.searchParams.get("error");
+            if (error) {
+                document.getElementById("message").innerText = error;
+            }
+        }
+    </script>
+</body>
+
+</html>
