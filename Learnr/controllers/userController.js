@@ -2,44 +2,61 @@
 const userModel = require('../models/userModel');
 const pathwayModel = require('../models/pathwaysModel');
 
-let accountUsername = 'mentor1';
+let accountUsername = 'mentor1'; //Global variable used to keep track of which user is currently logged in.
 
 exports.handlePathways = (req, res) => {
-    console.log('Assigning A Pathway');
     var skill;
-    var mentee = [];
     const {pathwayID, menteeUsername} = req.body;
     pathwayModel.getPathway(pathwayID, (pathwaySkill) => {
         skill = pathwaySkill;
-        
-        userModel.validateUsername(menteeUsername, (result) => {
-            if (result){
-                pathwayModel.checkPathway(pathwayID, menteeUsername, (found) =>{
-                    if (found){
-                        res.send(`
+    pathwayModel.validatePathwayID(pathwayID, (validation) => {
+        if (validation) {
+            userModel.validateUsername(menteeUsername, (result) => { //Checks to see if the desired mentee exists within the database.
+                if (result){
+                    pathwayModel.checkPathway(pathwayID, menteeUsername, (found) =>{ //Checks to see if the mentee-pathway combination already exists.
+                        if (found){ //Mentee-Pathway combination exists
+                            res.send(`
                                     This mentee already has this pathway. Please select another.
                                     <br><br>
                                     <button onclick="window.location.href='/mentor'">Go Back</button>
-                        `);
-                    }
-                    else {
-                        pathwayModel.addPathway(pathwayID, menteeUsername, (err) =>{
-                            if (err) {
-                                console.error('Error writing to the CSV file.', err);
-                                res.status(500).send('Internal Server Error');
-                            } else {
-                                res.send(`
-                                    New pathway assigned successfully!
-                                    <br><br>
-                                    <button onclick="window.location.href='/mentor'">Return to Dashboard</button>
-                                    <button onclick="window.location.href='/assign'">Assign a new pathway</button>
-                                `);
-                            }
-                        });
-                    }
-                })
-            }
-        })
+                            `);
+                        }
+                        else {
+                            pathwayModel.addPathway(pathwayID, menteeUsername, (err) =>{ //If the combination does not exist, write to the csv file to assign the desired mentee the desired pathway.
+                                if (err) {
+                                    console.error('Error writing to the CSV file.', err);
+                                    res.status(500).send('Internal Server Error');
+                                } 
+                                else {
+                                    res.send(`
+                                        New pathway assigned successfully!
+                                        <br><br>
+                                        <button onclick="window.location.href='/mentor'">Return to Dashboard</button>
+                                        <button onclick="window.location.href='/assign'">Assign a new pathway</button>
+                                    `);
+                                }
+                            });
+                        }
+                    })
+                }
+                else {
+                    res.send(`
+                        This mentee does not exist.
+                        <br><br>
+                        <button onclick="window.location.href='/mentor'">Go Back</button>
+                    `);
+                }
+
+            })
+        }
+        else {
+            res.send(`
+                    This pathway does not exist.
+                    <br><br>
+                    <button onclick="window.location.href='/mentor'">Go Back</button>
+            `);
+        }
+    })
     });
 }
 
