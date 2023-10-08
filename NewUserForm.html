@@ -1,0 +1,37 @@
+<!--File that displays a page for registering a new user-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register New User</title>
+</head>
+
+<body>
+    <h1>Register New User</h1>
+    <form id="registerForm" action="/register" method="post">
+        <label for="newUsername">Email:</label>
+        <input type="text" id="newUsername" name="newUsername" required><br><br>
+
+        <label for="newPassword">Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="userType">User Type:</label>
+        <select id="userType" name="userType">
+            <option value="admin">Admin</option>
+            <option value="mentor">Mentor</option>
+            <option value="mentee">Mentee</option>
+
+        </select><br><br>
+       
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+
+</html>
