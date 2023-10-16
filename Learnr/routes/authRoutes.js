@@ -39,6 +39,23 @@ router.get('/register', (req, res) => {
 
 router.post('/register', userController.register);
 
+router.get('/profile', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'Profile.html');
+    res.sendFile(filePath);
+});
+
+router.get('/user/profile', userController.getProfile);
+
+
+
+
+router.get('/admin_reset_password', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'ResetUserPasswordForm.html');
+    res.sendFile(filePath);
+});
+
+router.post('/admin_reset_password', userController.admin_reset_password);
+
 router.get('/assign', (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
     res.sendFile(filePath);

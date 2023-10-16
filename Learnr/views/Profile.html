@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>Welcome, <span id="firstName"></span> <span id="lastName"></span></h1>
+
+    <p>Name: <span id="firstName"></span> <span id="lastName"></span></p>
+    <p>School: <span id="school"></span></p>
+    <p>Job Title: <span id="jobTitle"></span></p>
+    action="/login" method="post">
+    <button onclick="window.location.href='/dashboard'">Back to Dashboard</button>
+
+    <script>
+        // Fetch user data from the server and display it
+        fetch('/user/profile')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('firstName').innerText = data.first_name;
+                document.getElementById('lastName').innerText = data.last_name;
+                document.getElementById('school').innerText = data.school;
+                document.getElementById('jobTitle').innerText = data.job_title;
+            })
+            .catch(error => console.error('Error fetching profile:', error));
+    </script>
+</body>
+</html>

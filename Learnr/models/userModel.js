@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const csv = require('csv-parser');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 
 //Checks to see if the user's credentials match any in the csv file.
@@ -19,6 +20,7 @@ exports.checkuser = (username, password, callback) => {
             callback(found); //Returns (true/false) or in the case of it being true, returns the paermission type of the account.
         });
 }
+
 
 exports.validateUsername = (username, callback) => {
     let found = false;
@@ -58,6 +60,57 @@ exports.userExists = (newUsername, callback) => {
             callback(exists); //Returns (true/false)
         });
 }
+
+exports.getUserData = (username, callback) => {
+    let userData = null;
+    const stream = fs.createReadStream('UserProfile.csv');
+    stream 
+        .pipe(csv())
+        .on('data', (row) => {
+            if (row.username === username) {
+                userData = {
+                    first_name: row.first_name,
+                    last_name: row.last_name,
+                    school: row.school,
+                    job_title: row.job_title,
+                };
+            }
+        })
+        .on ('end', () => {
+            callback(userData);
+        });
+};
+
+
+exports.adminUpdatePassword = (username, newPassword, callback) => {
+    const rows = [];
+    fs.createReadStream('UserList.csv')
+        .pipe(csv())
+        .on('data', (row) => {
+            rows.push(row);
+        })
+        .on('end', () => {
+            const userIndex = rows.findIndex(row => row.username === username);
+            if (userIndex === -1) {
+                callback(false);
+                return;
+            }
+            rows[userIndex].password = newPassword;
+
+            const csvWriter = createCsvWriter({
+                path: 'UserList.csv',
+                header: Object.keys(rows[0]).map(key => ({ id: key, title: key })),
+            });
+
+            csvWriter.writeRecords(rows)
+                .then(() => callback(true))
+                .catch((error) => {
+                    console.error('Error writing to CSV file:', error);
+                    callback(false);
+                });
+        });
+}
+
 
 exports.getMentee = (mentorUsername, callback) => {
 

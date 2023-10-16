@@ -3,6 +3,7 @@ const userModel = require('../models/userModel');
 const pathwayModel = require('../models/pathwaysModel');
 
 let accountUsername = 'mentor1'; //Global variable used to keep track of which user is currently logged in.
+let accountUserType = 'null';
 
 exports.handlePathways = (req, res) => {
     var skill;
@@ -66,6 +67,7 @@ exports.login = (req, res) => {
     userModel.checkuser(username, password, (result) => {
         if (result){
             accountUsername = username;
+            accountUserType = result;
             redirectToPage(result, res);
         }
         else {
@@ -73,6 +75,59 @@ exports.login = (req, res) => {
         }
     });
 }
+
+exports.getProfile = (req, res) => {
+    // Example: Fetch user data based on logged-in user. Replace with actual logic.
+    userModel.getUserData(accountUsername, (userData) => {
+        if (userData) {
+            res.json(userData);
+        } else {
+            res.status(404).send('User not found');
+        }
+    });
+};
+
+
+
+exports.admin_reset_password = (req, res) => {
+    const { username, password, retype_password } = req.body;
+    
+    console.log(username)
+    console.log(password)
+    console.log(retype_password)
+    
+    userModel.validateUsername(username, (exists) => {
+        if(exists && password === retype_password) {
+            userModel.adminUpdatePassword(username, password, (success) => {
+                if(success){
+                    res.send(`
+                        User successfuflly assigned new password!
+                        <br><br>
+                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                    `);
+                }
+                else {
+                    res.send(`
+                        Error resetting password!
+                        <br><br>
+                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                    `);
+                }
+            });
+        }
+        else {
+            
+            if (!exists){
+                res.redirect('/?error=email');
+            }
+            
+            if (password !== retype_password) {
+                res.redirect('/?error=password');
+            }
+        }
+    });
+}
+
 
 //Register a user by first checking to see if the username already exsists in the csv file. If not, writes to the csv file with the new information.
 exports.register = (req, res) => {
@@ -103,6 +158,11 @@ exports.register = (req, res) => {
 
 //Function to redirect the user to the their correct dashboard.
 function redirectToPage(permission, res) {
+
+    if (accountUserType != 'null') {
+        permission = accountUserType; 
+    }
+    
     switch (permission) {
         case 'admin':
             res.redirect('/admin');

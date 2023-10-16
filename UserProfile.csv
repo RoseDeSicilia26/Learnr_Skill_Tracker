@@ -1,1 +1,2 @@
-username,name,email,position,school,bio
+username,first_name,last_name,school,job_title
+admin1,Rose,De Sicilia,Florida International University,Intern
