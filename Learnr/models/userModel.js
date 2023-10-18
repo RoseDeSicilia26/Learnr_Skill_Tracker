@@ -69,10 +69,10 @@ exports.getUserData = (username, callback) => {
         .on('data', (row) => {
             if (row.username === username) {
                 userData = {
-                    first_name: row.first_name,
-                    last_name: row.last_name,
+                    name: row.first_name,
+                    lastName: row.last_name,
                     school: row.school,
-                    job_title: row.job_title,
+                    title: row.job_title,
                 };
             }
         })
