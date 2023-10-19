@@ -1,6 +1,8 @@
 const connection = require('./database');
 
-//userModel.checkuser
+const fs = require('fs');
+const csv = require('csv-parser');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 exports.checkuser = (username, password, callback) => {
     console.log('Checking user');
@@ -22,6 +24,7 @@ exports.checkuser = (username, password, callback) => {
 
     });
 }
+
 
 exports.validateUsername = (username, callback) => {
 
@@ -79,9 +82,58 @@ exports.userExists = (newUsername, callback) => {
 
 }
 
-// //Returns a list of mentees
-// exports.getMentee = (mentorUsername, callback) => {
+exports.getUserData = (username, callback) => {
+    let userData = null;
+    const stream = fs.createReadStream('UserProfile.csv');
+    stream 
+        .pipe(csv())
+        .on('data', (row) => {
+            if (row.username === username) {
+                userData = {
+                    name: row.first_name,
+                    lastName: row.last_name,
+                    school: row.school,
+                    title: row.job_title,
+                };
+            }
+        })
+        .on ('end', () => {
+            callback(userData);
+        });
+};
 
+
+exports.adminUpdatePassword = (username, newPassword, callback) => {
+    const rows = [];
+    fs.createReadStream('UserList.csv')
+        .pipe(csv())
+        .on('data', (row) => {
+            rows.push(row);
+        })
+        .on('end', () => {
+            const userIndex = rows.findIndex(row => row.username === username);
+            if (userIndex === -1) {
+                callback(false);
+                return;
+            }
+            rows[userIndex].password = newPassword;
+
+            const csvWriter = createCsvWriter({
+                path: 'UserList.csv',
+                header: Object.keys(rows[0]).map(key => ({ id: key, title: key })),
+            });
+
+            csvWriter.writeRecords(rows)
+                .then(() => callback(true))
+                .catch((error) => {
+                    console.error('Error writing to CSV file:', error);
+                    callback(false);
+                });
+        });
+}
+
+
+//exports.getMentee = (mentorUsername, callback) => {
 //     fs.readFile('Relationship.csv', 'utf8', (err, data) => {
 //             // Read the CSV file
 

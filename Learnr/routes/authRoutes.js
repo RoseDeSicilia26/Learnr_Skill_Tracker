@@ -12,6 +12,33 @@ router.get('/', (req, res) => {
 
 router.post('/login', userController.login);
 
+router.get('/logout',  (req, res) => {
+    userController.logout;
+
+    const filePath = path.join(__dirname, '..', 'views', 'LearnrLogin Front.html');
+    res.sendFile(filePath);
+});
+
+router.get('/profile', userController.getProfile);
+
+router.get('/dashboard', (req, res) => {
+    
+    permission = userController.accountUserType;
+    switch (permission) {
+        case 'admin':
+            res.sendFile(path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html'));
+            break;
+        case 'mentor':
+            res.sendFile(path.join(__dirname, '..', 'views', 'mentor', 'Mentor.html'));
+            break;
+        case 'mentee':
+            res.sendFile(path.join(__dirname, '..', 'views', 'mentee', 'Mentee.html'));
+            break;
+        default:
+            res.sendFile('/default');
+    }
+});
+
 
 router.get('/admin', (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html');
@@ -38,6 +65,23 @@ router.get('/register', (req, res) => {
 });
 
 router.post('/register', userController.register);
+
+router.get('/profile', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'Profile.html');
+    res.sendFile(filePath);
+});
+
+router.get('/user/profile', userController.getProfile);
+
+
+
+
+router.get('/admin_reset_password', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'ResetUserPasswordForm.html');
+    res.sendFile(filePath);
+});
+
+router.post('/admin_reset_password', userController.admin_reset_password);
 
 router.get('/assign', (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
