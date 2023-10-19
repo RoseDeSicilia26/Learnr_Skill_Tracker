@@ -1,60 +1,71 @@
-//Handles all data relating to pathways.
-const fs = require('fs');
-const csv = require('csv-parser');
+const connection = require('./database');
 
-//Returns the skill of a pathway.
-exports.getPathway = (pathwayID, callback) => { 
-    var skill;
-    const stream = fs.createReadStream('Pathway.csv');
-    stream 
-        .pipe(csv())
-        .on('data', (row) => {
-            if (row.pathwayID === pathwayID) {
-                skill = row.pathwayName;
+
+exports.getPathwaySkill = (pathwayID, callback) => {
+    let pathSkill;
+    const retrieveQuery = 'SELECT skill FROM pathways WHERE ID = ?';
+
+    connection.query(retrieveQuery, pathwayID, (err, results) => {
+        if (err) {
+            console.error('Error getting pathway: ', err);
+        } 
+        else {
+            if (results.length>0){
+                pathSkill = results[0];
             }
-        })
-        .on ('end', () => {
-            callback(skill); //Returns the name of the pathway's skill
-        });
+
+            callback(pathSkill);
+        }
+    });
 }
 
 //Adds a pathway with a mentee to the csv file.
-exports.addPathway = (pathwayID, menteeUsername, callback) => { 
-    const csvLine = `${menteeUsername},${pathwayID},${1}, \n`;
-    fs.appendFile('MenteeDashboard.csv', csvLine, (err) => {
+exports.addPathway = (pathwayID, menteeUsername, step, callback) => { 
+
+    const insertQuery = 'INSERT INTO menteepathways (menteeUsername, pathwayID, step) VALUES (?, ?, ?)';
+
+    connection.query(insertQuery, [menteeUsername, pathwayID, step], (err, results) => {
+        if (err) {
+            console.error('Error adding pathway: ', err);
+        } 
+        
         callback(err);
     });
 }
 
 //Checks to see if the pathway + mentee does not already exist in the csv file.
 exports.checkPathway = (pathwayID, menteeUsername, callback) => { 
+
     let found = false;
-    const stream = fs.createReadStream('MenteeDashboard.csv');
-    stream 
-        .pipe(csv())
-        .on('data', (row) => {
-            if (row.pathwayID === pathwayID && row.username === menteeUsername) {
+    const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeUsername = ? AND pathwayID = ?';
+
+    connection.query(retrieveQuery, [menteeUsername, pathwayID], (err, results) => {
+        if (err) {
+            found = false;
+        } 
+        else {
+            if (results.length>0){
                 found = true;
             }
-        })
-        .on ('end', () => {
-            callback(found); //Returns the name of the pathway's skill
-        });
-        
+        }
+        callback(found);
+    });    
 }
 
 exports.validatePathwayID = (pathwayID, callback) => { 
-    let found = false;
-    const stream = fs.createReadStream('Pathway.csv');
-    stream 
-        .pipe(csv())
-        .on('data', (row) => {
-            if (row.pathwayID === pathwayID) {
+
+    const retrieveQuery = 'SELECT * FROM pathways WHERE ID = ?';
+
+    connection.query(retrieveQuery, pathwayID, (err, results) => {
+        if (err) {
+            found = false;
+        } 
+        else {
+            if (results.length>0){
                 found = true;
             }
-        })
-        .on ('end', () => {
-            callback(found); //Returns the name of the pathway's skill
-        });
-        
+
+            callback(found);
+        }
+    }); 
 }

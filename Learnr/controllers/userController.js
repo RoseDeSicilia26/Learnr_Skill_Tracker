@@ -7,12 +7,12 @@ exports.accountUserType = '';
 
 exports.handlePathways = (req, res) => {
     var skill;
-    const {pathwayID, menteeUsername} = req.body;
-    pathwayModel.getPathway(pathwayID, (pathwaySkill) => {
+    const {pathwayID, menteeUsername, step} = req.body;
+    pathwayModel.getPathwaySkill(pathwayID, (pathwaySkill) => {
         skill = pathwaySkill;
     pathwayModel.validatePathwayID(pathwayID, (validation) => {
         if (validation) {
-            userModel.validateUsername(menteeUsername, (result) => { //Checks to see if the desired mentee exists within the database.
+            userModel.userExists(menteeUsername, (result) => { //Checks to see if the desired mentee exists within the database.
                 if (result){
                     pathwayModel.checkPathway(pathwayID, menteeUsername, (found) =>{ //Checks to see if the mentee-pathway combination already exists.
                         if (found){ //Mentee-Pathway combination exists
@@ -23,7 +23,7 @@ exports.handlePathways = (req, res) => {
                             `);
                         }
                         else {
-                            pathwayModel.addPathway(pathwayID, menteeUsername, (err) =>{ //If the combination does not exist, write to the csv file to assign the desired mentee the desired pathway.
+                            pathwayModel.addPathway(pathwayID, menteeUsername, step, (err) =>{ //If the combination does not exist, write to the csv file to assign the desired mentee the desired pathway.
                                 if (err) {
                                     console.error('Error writing to the CSV file.', err);
                                     res.status(500).send('Internal Server Error');
