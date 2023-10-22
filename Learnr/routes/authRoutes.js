@@ -19,71 +19,62 @@ router.get('/logout',  (req, res) => {
     res.sendFile(filePath);
 });
 
-router.get('/profile', userController.getProfile);
+router.get('/profile', userController.checkIfLoggedIn, userController.getProfile);
 
-router.get('/dashboard', (req, res) => {
+router.get('/updateProfile', userController.checkIfLoggedIn, userController.getProfile);
+
+router.post('/updateProfile', userController.checkIfLoggedIn, userController.updateProfile);
+
+router.get('/dashboard', userController.checkIfLoggedIn, (req, res) => {
     
-    permission = userController.accountUserType;
-    switch (permission) {
-        case 'admin':
-            res.sendFile(path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html'));
-            break;
-        case 'mentor':
-            res.sendFile(path.join(__dirname, '..', 'views', 'mentor', 'Mentor.html'));
-            break;
-        case 'mentee':
-            res.sendFile(path.join(__dirname, '..', 'views', 'mentee', 'Mentee.html'));
-            break;
-        default:
-            res.sendFile('/default');
+    if (userController.accountUserType === "mentor") {
+        if (userController.accountIsAdmin === 1) {
+            res.redirect('/admin');
+        }
+        else {
+            res.redirect('/mentor');
+        }
     }
+    else if (userController.accountUserType === "mentee") {
+        res.redirect('/mentee');
+    }
+
 });
 
 
-router.get('/admin', (req, res) => {
+router.get('/admin', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html');
     res.sendFile(filePath);
 });
 
-router.get('/mentor', (req, res) => {
+router.get('/mentor', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'mentor', 'Mentor.html');
     res.sendFile(filePath);
 });
 
-router.get('/mentee', (req, res) => {
+router.get('/mentee', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'mentee', 'Mentee.html');
     res.sendFile(filePath);
 });
 
-router.get('/default', (req, res) => {
-    res.send('<h1>Default Dashboard</h1>');
-});
 
-router.get('/register', (req, res) => {
+router.get('/register', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'NewUserForm.html');
     res.sendFile(filePath);
 });
 
-router.post('/register', userController.register);
+router.post('/register', userController.checkIfLoggedIn, userController.register);
 
-router.get('/profile', (req, res) => {
-    const filePath = path.join(__dirname, '..', 'views', 'Profile.html');
-    res.sendFile(filePath);
-});
+// router.get('/user/profile', userController.checkIfLoggedIn, userController.getProfile);
 
-router.get('/user/profile', userController.getProfile);
-
-
-
-
-router.get('/admin_reset_password', (req, res) => {
+router.get('/admin_reset_password', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'ResetUserPasswordForm.html');
     res.sendFile(filePath);
 });
 
 router.post('/admin_reset_password', userController.admin_reset_password);
 
-router.get('/assign', (req, res) => {
+router.get('/assign', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
     res.sendFile(filePath);
 });
