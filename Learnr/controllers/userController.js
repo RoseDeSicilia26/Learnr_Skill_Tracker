@@ -64,11 +64,18 @@ exports.handlePathways = (req, res) => {
 //Logs in the user by checking their information against the csv file and redirecting them to the appropriate page based on the type of permission in the file.
 exports.login = (req, res) => { 
     const {username, password} = req.body;
-    userModel.checkuser(username, password, (result) => {
-        if (result){
+    userModel.checkuser(username, password, (userType, isAdmin) => {
+        if (userType != null){
             this.accountUsername = username;
-            this.accountUserType = result;
-            this.redirectToPage(result, res);
+            this.accountUserType = userType;
+            console.log(isAdmin);
+            if (isAdmin){
+                console.log('Going to admin page');
+                this.redirectToPage('admin', res);
+            }
+            else{
+                this.redirectToPage(userType, res);
+            }
         }
         else {
             res.redirect('/?error=Invalid%20Credentials');
@@ -120,15 +127,11 @@ exports.getProfile = (req, res) => {
 
 
 exports.admin_reset_password = (req, res) => {
-    const { username, password, retype_password } = req.body;
+    const { email, password, retype_password } = req.body;
     
-    console.log(username)
-    console.log(password)
-    console.log(retype_password)
-    
-    userModel.validateUsername(username, (exists) => {
+    userModel.validateEmail(email, (exists) => {
         if(exists && password === retype_password) {
-            userModel.adminUpdatePassword(username, password, (success) => {
+            userModel.adminUpdatePassword(email, password, (success) => {
                 if(success){
                     res.send(`
                         User successfuflly assigned new password!
@@ -187,13 +190,13 @@ exports.register = (req, res) => {
 }
 
 //Function to redirect the user to the their correct dashboard.
-exports.redirectToPage = (permission, res) => {
+exports.redirectToPage = (userType, res) => {
 
-    if (this.accountUserType != 'null') {
-        permission = this.accountUserType; 
-    }
+    // if (this.accountUserType != 'null') {
+    //     userType = this.accountUserType; 
+    // }
     
-    switch (permission) {
+    switch (userType) {
         case 'admin':
             res.redirect('/admin');
             break;

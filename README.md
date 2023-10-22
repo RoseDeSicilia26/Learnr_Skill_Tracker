@@ -28,7 +28,17 @@ Follow the steps below to set up the project on your local machine:
      npm install express
      npm install bcrypt
      npm install csv-parser
+     npm install mysql2
      ```
+
+4. **MySQL Setup**:
+   - Download mySQL from this website: https://dev.mysql.com/downloads/installer/
+      - For windows select the download with the higher download count.
+      - For mac select the option that works for your specified operating system. 
+   - Once downloaded use all default settings and when it asks to enter a password type the recommended either 'root' or 'password' (This passowrd may vary from computer to computer).
+   - If possible do a full installation which will include mysql workbench and mysql sever.
+      - Run mySQL workbench and select the database and log in using the password you set for yourself.
+
 
 ## Getting Started
 
