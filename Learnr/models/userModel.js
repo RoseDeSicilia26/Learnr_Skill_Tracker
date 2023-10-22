@@ -7,7 +7,7 @@ const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 exports.checkuser = (username, password, callback) => {
     console.log('Checking user');
     let found = false;
-    const retrieveQuery = 'SELECT permission FROM userlist WHERE username = ? AND password = ?';
+    const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE username = ? AND password = ?';
 
     connection.query(retrieveQuery, [username, password], (err, results) => {
         console.log('Retrieving query');
@@ -16,7 +16,10 @@ exports.checkuser = (username, password, callback) => {
         } 
         else {
             if (results.length>0){
-                found = results[0].permission;
+                found = {
+                    userType: results[0].userType,  // Access the userType property of the first row
+                    isAdmin: results[0].isAdmin    // Access the isAdmin property of the first row
+                };  
             }
 
             callback(found);
@@ -29,11 +32,12 @@ exports.checkuser = (username, password, callback) => {
 exports.validateUsername = (username, callback) => {
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM userlist WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
 
         connection.query(retrieveQuery, username, (err, results) => {
             if (err) {
                 console.error('Error finding username:', err);
+                callback(found);
             } 
             else {
                 if (results.length>0){
@@ -47,9 +51,9 @@ exports.validateUsername = (username, callback) => {
 
 }
 
-exports.addUser = (newUsername, newPassword, userType, name, email, position, callback) => {
+exports.addUser = (newUsername, newPassword, name, lastName, email, position, userType, isAdmin, callback) => {
 
-    const insertQuery = 'INSERT INTO userlist (username, password, permission) VALUES (?, ?, ?)';
+    const insertQuery = 'INSERT INTO users (username, password, name, lastName, email, position, userType, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
         connection.query(insertQuery, [newUsername, newPassword, userType], (err) => {
             if (err) {
@@ -64,7 +68,7 @@ exports.addUser = (newUsername, newPassword, userType, name, email, position, ca
 exports.userExists = (newUsername, callback) => {
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM userlist WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
 
         connection.query(retrieveQuery, newUsername, (err, results) => {
             if (err) {
@@ -82,55 +86,71 @@ exports.userExists = (newUsername, callback) => {
 
 }
 
-exports.getUserData = (username, callback) => {
-    let userData = null;
-    const stream = fs.createReadStream('UserProfile.csv');
-    stream 
-        .pipe(csv())
-        .on('data', (row) => {
-            if (row.username === username) {
-                userData = {
-                    name: row.first_name,
-                    lastName: row.last_name,
-                    school: row.school,
-                    title: row.job_title,
-                };
+exports.updateProfile = (username, firstName, lastName, email, position, bio, school, interests, callback) => {
+    const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, email = ?, position = ?, bio = ?, school = ?, interests = ? WHERE username = ?';
+    console.log("Inisde update profile with my username " + username);
+    connection.query(updateQuery, [firstName, lastName, email, position, bio, school, interests, username], (err, results) => {
+        if (err) {
+            console.error('Error updating profile:', err);
+            callback(false);
+        } else {
+            if (results.affectedRows > 0) { // Check if the profile was updated successfully
+                callback(true);
+            } else {
+                callback(false);
             }
-        })
-        .on ('end', () => {
-            callback(userData);
-        });
+        }
+    });
+
+}
+
+exports.adminUpdatePassword = (username, newPassword, callback) => {
+    const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
+
+    connection.query(updateQuery, [newPassword, username], (err, results) => {
+        if (err) {
+            console.error('Error updating password:', err);
+            callback(false);
+        } else {
+            if (results.affectedRows > 0) { // Check if the password was updated successfully
+                callback(true);
+            } else {
+                callback(false);
+            }
+        }
+    });
 };
 
 
-exports.adminUpdatePassword = (username, newPassword, callback) => {
-    const rows = [];
-    fs.createReadStream('UserList.csv')
-        .pipe(csv())
-        .on('data', (row) => {
-            rows.push(row);
-        })
-        .on('end', () => {
-            const userIndex = rows.findIndex(row => row.username === username);
-            if (userIndex === -1) {
-                callback(false);
-                return;
+exports.getUserData = (username, callback) => {
+    const retrieveQuery = 'SELECT firstName, lastName, email, bio, interests, position, school, userType FROM users WHERE username = ?';
+
+    connection.query(retrieveQuery, username, (err, results) => {
+        if (err) {
+            console.error('Error retrieving user data:', err);
+            callback(null);
+        } else {
+            if (results.length > 0) {
+                const row = results[0];
+                const userData = {
+                    username: username,
+                    firstName: row.firstName,
+                    lastName: row.lastName,
+                    email: row.email,
+                    bio: row.bio, 
+                    interests: row.interests,
+                    position: row.position,
+                    school: row.school,
+                    userType: row.userType,
+                };
+                callback(userData);
+            } else {
+                callback(null);
             }
-            rows[userIndex].password = newPassword;
+        }
+    });
+};
 
-            const csvWriter = createCsvWriter({
-                path: 'UserList.csv',
-                header: Object.keys(rows[0]).map(key => ({ id: key, title: key })),
-            });
-
-            csvWriter.writeRecords(rows)
-                .then(() => callback(true))
-                .catch((error) => {
-                    console.error('Error writing to CSV file:', error);
-                    callback(false);
-                });
-        });
-}
 
 
 //exports.getMentee = (mentorUsername, callback) => {
