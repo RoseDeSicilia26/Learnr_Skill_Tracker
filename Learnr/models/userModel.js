@@ -161,7 +161,6 @@ exports.adminUpdatePassword = (email, newPassword, callback) => {
         else {
             callback(true);
         }
-
     });
 };
 
