@@ -4,7 +4,7 @@ const pathwayModel = require('../models/pathwaysModel');
 
 exports.accountUsername = ''; //Global variable used to keep track of which user is currently logged in.
 exports.accountUserType = '';
-exports.accountIsAdmin = '0';
+exports.accountIsAdmin = 0;
 
 exports.handlePathways = (req, res) => {
     var skill;
@@ -20,7 +20,7 @@ exports.handlePathways = (req, res) => {
                             res.send(`
                                     This mentee already has this pathway. Please select another.
                                     <br><br>
-                                    <button onclick="window.location.href='/mentor'">Go Back</button>
+                                    <button onclick="window.location.href='/dashboard'">Go Back</button>
                             `);
                         }
                         else {
@@ -33,7 +33,7 @@ exports.handlePathways = (req, res) => {
                                     res.send(`
                                         New pathway assigned successfully!
                                         <br><br>
-                                        <button onclick="window.location.href='/mentor'">Return to Dashboard</button>
+                                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                                         <button onclick="window.location.href='/assign'">Assign a new pathway</button>
                                     `);
                                 }
@@ -82,7 +82,7 @@ exports.login = (req, res) => {
 exports.logout = (req, res) => {
     this.accountUsername = ''; 
     this.accountUserType = '';
-    this.accountIsAdmin = 'false';
+    this.accountIsAdmin = 0;
 }
 
 exports.getProfile = (req, res) => {
@@ -217,20 +217,21 @@ exports.admin_reset_password = (req, res) => {
     
     userModel.validateEmail(email, (exists) => {
 
-        if(exists && password === retype_password) {
+        if(exists && (password === retype_password)) {
             userModel.adminUpdatePassword(email, password, (success) => {
                 if(success){
                     res.send(`
-                        User successfuflly assigned new password!
+                        User successfully assigned new password!
                         <br><br>
-                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                     `);
                 }
                 else {
                     res.send(`
                         Error resetting password!
                         <br><br>
-                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/admin_reset_password'">Return to Password Reset</button>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                     `);
                 }
             });
@@ -238,11 +239,11 @@ exports.admin_reset_password = (req, res) => {
         else {
             
             if (!exists){
-                res.redirect('/?error=email');
+                res.redirect('/admin_reset_password/?error=email');
             }
             
-            if (password !== retype_password) {
-                res.redirect('/?error=password');
+            else if (password !== retype_password) {
+                res.redirect('/admin_reset_password/?error=password');
             }
         }
     });
@@ -261,7 +262,15 @@ exports.register = (req, res) => {
                 <button onclick="window.location.href='/register'">Go Back</button>
             `);
         } else {
-            userModel.addUser(newUsername, newPassword, name, lastName, email, position, userType, isAdmin, (err) => {
+
+            if(isAdmin === 'yes') {
+                isAdmin_val = 1;
+            }
+            else {
+                isAdmin_val = 0;
+            }
+            
+            userModel.addUser(newUsername, newPassword, name, lastName, email, position, userType, isAdmin_val, (err) => {
                 if (err) {
                     console.error('Error writing to the sql database file.', err);
                     res.status(500).send('Internal Server Error');
@@ -286,7 +295,7 @@ exports.redirectToPage = (userType, res) => {
     }
     
     if (userType == "mentor") {
-        if (isAdmin == "1") {
+        if (isAdmin == 1) {
 
             res.redirect('/admin');
         }

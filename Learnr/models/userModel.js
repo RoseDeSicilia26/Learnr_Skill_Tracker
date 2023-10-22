@@ -50,11 +50,11 @@ exports.validateUsername = (username, callback) => {
 exports.validateEmail = (email, callback) => {
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
 
         connection.query(retrieveQuery, email, (err, results) => {
             if (err) {
-                console.error('Error finding Email:', err);
+                console.error('Error finding username:', err);
             } 
             else {
                 if (results.length>0){
@@ -68,11 +68,11 @@ exports.validateEmail = (email, callback) => {
 
 }
 
-exports.addUser = (newUsername, newPassword, userType, name, email, position, callback) => {
+exports.addUser = (newUsername, newPassword, name, lastName, email, position, userType, isAdmin, callback) => {
 
-    const insertQuery = 'INSERT INTO users (username, password, userType, firstName, email, position) VALUES (?, ?, ?, ?, ?, ?)';
+    const insertQuery = 'INSERT INTO users (username, password, firstName, lastName, email, position, userType, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-        connection.query(insertQuery, [newUsername, newPassword, userType, name, email, position], (err) => {
+        connection.query(insertQuery, [newUsername, newPassword, name, lastName, email, position, userType, isAdmin], (err) => {
             if (err) {
                 console.error('Error adding user:', err);
             } 
@@ -122,6 +122,8 @@ exports.getUserData = (username, callback) => {
                     sex: results[0].sex,
                     bio: results[0].bio,
                     interests: results[0].interests,
+                    username: results[0].username,
+                    userType: results[0].userType,
                 };
             }
 
@@ -149,13 +151,13 @@ exports.updateProfile = (username, firstName, lastName, email, position, bio, sc
 
 }
 
-exports.adminUpdatePassword = (email, newPassword, callback) => {
+exports.adminUpdatePassword = (username, newPassword, callback) => {
 
-    const updateQuery = 'UPDATE users SET password = ? WHERE email = ?';
+    const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
 
-    connection.query(updateQuery, [newPassword, email] , (err, results) => {
+    connection.query(updateQuery, [newPassword, username] , (err, results) => {
         if (err) {
-            console.error('Error checking email:', err);
+            console.error('Error checking username:', err);
             callback(false);
         } 
         else {

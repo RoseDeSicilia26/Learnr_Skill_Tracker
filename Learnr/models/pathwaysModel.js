@@ -3,7 +3,7 @@ const connection = require('./database');
 
 exports.getPathwaySkill = (pathwayID, callback) => {
     let pathSkill;
-    const retrieveQuery = 'SELECT skill FROM pathways WHERE ID = ?';
+    const retrieveQuery = 'SELECT skill FROM pathways WHERE pathwayID = ?';
 
     connection.query(retrieveQuery, pathwayID, (err, results) => {
         if (err) {
@@ -54,7 +54,7 @@ exports.checkPathway = (pathwayID, menteeUsername, callback) => {
 
 exports.validatePathwayID = (pathwayID, callback) => { 
 
-    const retrieveQuery = 'SELECT * FROM pathways WHERE ID = ?';
+    const retrieveQuery = 'SELECT * FROM pathways WHERE pathwayID = ?';
 
     connection.query(retrieveQuery, pathwayID, (err, results) => {
         if (err) {
