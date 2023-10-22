@@ -25,22 +25,7 @@ router.get('/updateProfile', userController.checkIfLoggedIn, userController.getP
 
 router.post('/updateProfile', userController.checkIfLoggedIn, userController.updateProfile);
 
-router.get('/dashboard', userController.checkIfLoggedIn, (req, res) => {
-    
-    if (userController.accountUserType === "mentor") {
-        if (userController.accountIsAdmin === 1) {
-            res.redirect('/admin');
-        }
-        else {
-            res.redirect('/mentor');
-        }
-    }
-    else if (userController.accountUserType === "mentee") {
-        res.redirect('/mentee');
-    }
-
-});
-
+router.get('/dashboard', userController.checkIfLoggedIn, userController.redirectToPage);
 
 router.get('/admin', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html');

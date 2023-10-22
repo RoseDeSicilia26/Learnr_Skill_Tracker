@@ -4,7 +4,8 @@ const pathwayModel = require('../models/pathwaysModel');
 
 exports.accountUsername = ''; //Global variable used to keep track of which user is currently logged in.
 exports.accountUserType = '';
-exports.accountIsAdmin = '0';
+exports.accountIsAdmin = 0;
+exports.userData = {};
 
 exports.handlePathways = (req, res) => {
     var skill;
@@ -82,7 +83,8 @@ exports.login = (req, res) => {
 exports.logout = (req, res) => {
     this.accountUsername = ''; 
     this.accountUserType = '';
-    this.accountIsAdmin = 'false';
+    this.accountIsAdmin = 0;
+    this.userData = {};
 }
 
 exports.getProfile = (req, res) => {
@@ -277,7 +279,7 @@ exports.register = (req, res) => {
 }
 
 //Function to redirect the user to the their correct dashboard.
-exports.redirectToPage = (permission, res) => {
+exports.redirectToPage = (req, res) => {
 
     if (this.accountUserType != 'null') {
         userType = this.accountUserType;
@@ -285,7 +287,7 @@ exports.redirectToPage = (permission, res) => {
     }
     
     if (userType == "mentor") {
-        if (isAdmin == "1") {
+        if (isAdmin == 1) {
             res.redirect('/admin');
         }
         else {

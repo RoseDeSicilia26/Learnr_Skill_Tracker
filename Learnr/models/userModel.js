@@ -123,7 +123,7 @@ exports.adminUpdatePassword = (username, newPassword, callback) => {
 
 
 exports.getUserData = (username, callback) => {
-    const retrieveQuery = 'SELECT firstName, lastName, email, bio, interests, position, school, userType FROM users WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
 
     connection.query(retrieveQuery, username, (err, results) => {
         if (err) {
