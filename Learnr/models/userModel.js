@@ -117,7 +117,7 @@ exports.getUserData = (username, callback) => {
         else {
             if (results.length>0){
                 userData = {
-                    name: results[0].firstName,
+                    firstName: results[0].firstName,
                     lastName: results[0].lastName,
                     school: results[0].school,
                     title: results[0].position,
