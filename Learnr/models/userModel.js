@@ -1,9 +1,5 @@
 const connection = require('./database');
 
-const fs = require('fs');
-const csv = require('csv-parser');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-
 exports.checkuser = (username, password, callback) => {
     console.log('Checking user');
     let found = false;
@@ -51,11 +47,32 @@ exports.validateUsername = (username, callback) => {
 
 }
 
-exports.addUser = (newUsername, newPassword, name, lastName, email, position, userType, isAdmin, callback) => {
+exports.validateEmail = (email, callback) => {
 
-    const insertQuery = 'INSERT INTO users (username, password, name, lastName, email, position, userType, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    let found = false;
+    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
 
-        connection.query(insertQuery, [newUsername, newPassword, userType], (err) => {
+        connection.query(retrieveQuery, email, (err, results) => {
+            if (err) {
+                console.error('Error finding Email:', err);
+            } 
+            else {
+                if (results.length>0){
+                    found = true;
+                }
+
+                callback(found);
+            }
+
+        });
+
+}
+
+exports.addUser = (newUsername, newPassword, userType, name, email, position, callback) => {
+
+    const insertQuery = 'INSERT INTO users (username, password, userType, firstName, email, position) VALUES (?, ?, ?, ?, ?, ?)';
+
+        connection.query(insertQuery, [newUsername, newPassword, userType, name, email, position], (err) => {
             if (err) {
                 console.error('Error adding user:', err);
             } 
@@ -86,6 +103,34 @@ exports.userExists = (newUsername, callback) => {
 
 }
 
+exports.getUserData = (username, callback) => {
+    let userData = null;
+    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
+
+    connection.query(retrieveQuery, username, (err, results) => {
+        if (err) {
+            console.error('Error finding username:', err);
+        } 
+        else {
+            if (results.length>0){
+                userData = {
+                    firstName: results[0].firstName,
+                    lastName: results[0].lastName,
+                    school: results[0].school,
+                    title: results[0].position,
+                    email: results[0].email,
+                    sex: results[0].sex,
+                    bio: results[0].bio,
+                    interests: results[0].interests,
+                };
+            }
+
+            callback(userData);
+        }
+
+    });
+};
+
 exports.updateProfile = (username, firstName, lastName, email, position, bio, school, interests, callback) => {
     const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, email = ?, position = ?, bio = ?, school = ?, interests = ? WHERE username = ?';
     console.log("Inisde update profile with my username " + username);
@@ -104,53 +149,20 @@ exports.updateProfile = (username, firstName, lastName, email, position, bio, sc
 
 }
 
-exports.adminUpdatePassword = (username, newPassword, callback) => {
-    const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
+exports.adminUpdatePassword = (email, newPassword, callback) => {
 
-    connection.query(updateQuery, [newPassword, username], (err, results) => {
+    const updateQuery = 'UPDATE users SET password = ? WHERE email = ?';
+
+    connection.query(updateQuery, [newPassword, email] , (err, results) => {
         if (err) {
-            console.error('Error updating password:', err);
+            console.error('Error checking email:', err);
             callback(false);
-        } else {
-            if (results.affectedRows > 0) { // Check if the password was updated successfully
-                callback(true);
-            } else {
-                callback(false);
-            }
+        } 
+        else {
+            callback(true);
         }
     });
 };
-
-
-exports.getUserData = (username, callback) => {
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
-
-    connection.query(retrieveQuery, username, (err, results) => {
-        if (err) {
-            console.error('Error retrieving user data:', err);
-            callback(null);
-        } else {
-            if (results.length > 0) {
-                const row = results[0];
-                const userData = {
-                    username: username,
-                    firstName: row.firstName,
-                    lastName: row.lastName,
-                    email: row.email,
-                    bio: row.bio, 
-                    interests: row.interests,
-                    position: row.position,
-                    school: row.school,
-                    userType: row.userType,
-                };
-                callback(userData);
-            } else {
-                callback(null);
-            }
-        }
-    });
-};
-
 
 
 //exports.getMentee = (mentorUsername, callback) => {

@@ -215,11 +215,12 @@ exports.checkIfLoggedIn = (req, res, next) => {
 };
 
 exports.admin_reset_password = (req, res) => {
-    const { username, password, retype_password } = req.body;
+    const { email, password, retype_password } = req.body;
+    
+    userModel.validateEmail(email, (exists) => {
 
-    userModel.validateUsername(username, (exists) => {
         if(exists && password === retype_password) {
-            userModel.adminUpdatePassword(username, password, (success) => {
+            userModel.adminUpdatePassword(email, password, (success) => {
                 if(success){
                     res.send(`
                         User successfuflly assigned new password!
@@ -279,7 +280,7 @@ exports.register = (req, res) => {
 }
 
 //Function to redirect the user to the their correct dashboard.
-exports.redirectToPage = (req, res) => {
+exports.redirectToPage = (userType, res) => {
 
     if (this.accountUserType != 'null') {
         userType = this.accountUserType;
@@ -288,6 +289,7 @@ exports.redirectToPage = (req, res) => {
     
     if (userType == "mentor") {
         if (isAdmin == 1) {
+
             res.redirect('/admin');
         }
         else {
