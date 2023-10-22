@@ -3,26 +3,22 @@ const connection = require('./database');
 exports.checkuser = (username, password, callback) => {
     console.log('Checking user');
     let found = false;
-    let userType = null;
-    let isAdmin = false;
-
     const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE username = ? AND password = ?';
 
     connection.query(retrieveQuery, [username, password], (err, results) => {
         console.log('Retrieving query');
         if (err) {
-            console.error('Error retrieving data:', err);
+            console.error('Error inserting data:', err);
         } 
         else {
             if (results.length>0){
-                userType = results[0].userType;
-                if (results[0].isAdmin === 1){
-                    isAdmin = true;
-                }
-                console.log(isAdmin);
+                found = {
+                    userType: results[0].userType,  // Access the userType property of the first row
+                    isAdmin: results[0].isAdmin    // Access the isAdmin property of the first row
+                };  
             }
 
-            callback(userType, isAdmin);
+            callback(found);
         }
 
     });
@@ -37,6 +33,7 @@ exports.validateUsername = (username, callback) => {
         connection.query(retrieveQuery, username, (err, results) => {
             if (err) {
                 console.error('Error finding username:', err);
+                callback(found);
             } 
             else {
                 if (results.length>0){
@@ -134,6 +131,23 @@ exports.getUserData = (username, callback) => {
     });
 };
 
+exports.updateProfile = (username, firstName, lastName, email, position, bio, school, interests, callback) => {
+    const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, email = ?, position = ?, bio = ?, school = ?, interests = ? WHERE username = ?';
+    console.log("Inisde update profile with my username " + username);
+    connection.query(updateQuery, [firstName, lastName, email, position, bio, school, interests, username], (err, results) => {
+        if (err) {
+            console.error('Error updating profile:', err);
+            callback(false);
+        } else {
+            if (results.affectedRows > 0) { // Check if the profile was updated successfully
+                callback(true);
+            } else {
+                callback(false);
+            }
+        }
+    });
+
+}
 
 exports.adminUpdatePassword = (email, newPassword, callback) => {
 
@@ -149,7 +163,7 @@ exports.adminUpdatePassword = (email, newPassword, callback) => {
         }
 
     });
-}
+};
 
 
 //exports.getMentee = (mentorUsername, callback) => {

@@ -4,6 +4,7 @@ const pathwayModel = require('../models/pathwaysModel');
 
 exports.accountUsername = ''; //Global variable used to keep track of which user is currently logged in.
 exports.accountUserType = '';
+exports.accountIsAdmin = '0';
 
 exports.handlePathways = (req, res) => {
     var skill;
@@ -64,18 +65,12 @@ exports.handlePathways = (req, res) => {
 //Logs in the user by checking their information against the csv file and redirecting them to the appropriate page based on the type of permission in the file.
 exports.login = (req, res) => { 
     const {username, password} = req.body;
-    userModel.checkuser(username, password, (userType, isAdmin) => {
-        if (userType != null){
+    userModel.checkuser(username, password, (result) => {
+        if (result){
             this.accountUsername = username;
-            this.accountUserType = userType;
-            console.log(isAdmin);
-            if (isAdmin){
-                console.log('Going to admin page');
-                this.redirectToPage('admin', res);
-            }
-            else{
-                this.redirectToPage(userType, res);
-            }
+            this.accountUserType = result.userType;
+            this.accountIsAdmin = result.isAdmin;
+            this.redirectToPage(result, res);
         }
         else {
             res.redirect('/?error=Invalid%20Credentials');
@@ -87,6 +82,7 @@ exports.login = (req, res) => {
 exports.logout = (req, res) => {
     this.accountUsername = ''; 
     this.accountUserType = '';
+    this.accountIsAdmin = 'false';
 }
 
 exports.getProfile = (req, res) => {
@@ -105,31 +101,122 @@ exports.getProfile = (req, res) => {
                     <title>User Profile</title>
                 </head>
                 <body>
+                <div id="userProfile">
+                <h2>User Profile</h2>
+
+                <p><b>Username</b>: ${userData.username}</p>
+                <p><b>User Type</b>: ${userData.userType}</p>
+
+                <form id="editProfileForm" action="/updateProfile" method="POST">
+                    <p><label>
+                        <strong>First Name:</strong>
+                        <input type="text" name="firstName" value="${userData.firstName || ''}" placeholder="Add first name">
+                    </label>
+                    <br></p>
+            
+                    <p><label>
+                        <strong>Last Name:</strong>
+                        <input type="text" name="lastName" value="${userData.lastName || ''}" placeholder="Add last name">
+                    </label>
+                    <br></p>
+            
+                    <p><label>
+                        <strong>Email:</strong>
+                        <input type="email" name="email" value="${userData.email || ''}" placeholder="Add email">
+                    </label>
+                    <br></p>
+
+                    <p><label>
+                        <strong>Position:</strong>
+                        <select name="position">
+                            <option value="intern" ${userData.position === 'intern' ? 'selected' : ''}>Intern</option>
+                            <option value="fulltime" ${userData.position === 'fulltime' ? 'selected' : ''}>Full Time</option>
+                        </select>
+                    </label></p>
+
+            
+                    <p><label>
+                        <strong>Bio:</strong>
+                        <textarea name="bio" placeholder="Add bio">${userData.bio || ''}</textarea>
+                    </label>
+                    <br></p>
+            
+                    <p><label>
+                        <strong>School:</strong>
+                        <input type="text" name="school" value="${userData.school || ''}" placeholder="Add school">
+                    </label>
+                    <br></p>
+            
+                    <p><label>
+                        <strong>Interests:</strong>
+                        <input type="text" name="interests" value="${userData.interests || ''}" placeholder="Add interests">
+                    </label>
+                    <br></p>
+
+                    <button type="submit" style="background-color: green; color: white;">Update Profile</button>
                     
-                    <div id="userProfile">
-                        <h2>User Profile</h2>
-                        <p><strong>Username:</strong> <span id="username">${this.accountUsername}</span></p>
-                        <p><strong>Name:</strong> <span id="name">${userData.name || 'add name'}</span></p> 
-                        <p><strong>Last Name:</strong> <span id="lastName">${userData.lastName || 'add last name'}</span></p>
-                        <p><strong>School:</strong> <span id="school">${userData.school || 'add school'}</span></p>
-                        <p><strong>Title:</strong> <span id="title">${userData.title || 'add title'}</span></p>
-                        <button onclick="location.href='/dashboard'">Back to Dashboard</button>
-                    </div>
+                    </form>
+
+                    <br><br>
+                    <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
                     
+                </div>
+                    
+            
                 </body>
                 </html>
             `);
-        } else {
-            res.status(404).send('User not found');
         }
     });
 };
 
+exports.updateProfile = (req, res) => {
+
+    const { firstName, lastName, email, position, bio, school, interests } = req.body;
+    userModel.validateUsername(this.accountUsername, (exists) => {
+        if(exists) {
+            userModel.updateProfile(this.accountUsername, firstName, lastName, email, position, bio, school, interests, (success) => {
+                if(success){
+                    res.redirect("/profile");
+                }
+                else {
+                    res.send(`
+                        <p>Error updating profile!</p>
+                        <div>
+                        <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
+                        <button onclick="window.location.href='/profile'" style="background-color: green; color: white;">Return to Profile</button>
+                        </div>
+                    `);
+                }
+            });
+        }
+        else {
+            res.send(`
+                <p>Error finding account!</p>
+                <div>
+                <button onclick="window.location.href='/'" style="background-color: green; color: white;">Return to Login</button>
+                </div>
+            `);
+}
+    });
+}
+
+exports.checkIfLoggedIn = (req, res, next) => {
+    if (this.accountUsername === '' && this.accountUserType === '') {
+        res.send(`
+            <p>Not logged in<p>
+            <button onclick="location.href='/'" style="background-color: green; color: white;">Return to Log In</button>
+        `);
+    } else {
+        next(); // Move to the next middleware or route handler
+    }
+};
 
 exports.admin_reset_password = (req, res) => {
     const { email, password, retype_password } = req.body;
     
     userModel.validateEmail(email, (exists) => {
+
         if(exists && password === retype_password) {
             userModel.adminUpdatePassword(email, password, (success) => {
                 if(success){
@@ -164,7 +251,8 @@ exports.admin_reset_password = (req, res) => {
 
 //Register a user by first checking to see if the username already exsists in the csv file. If not, writes to the csv file with the new information.
 exports.register = (req, res) => {
-    const { newUsername, newPassword, userType, name, email, position} = req.body;
+
+    const { newUsername, newPassword, name, lastName, email, position, userType, isAdmin} = req.body;
     userModel.userExists(newUsername, (exists) => {
         if (exists) {
             res.send(`
@@ -173,9 +261,9 @@ exports.register = (req, res) => {
                 <button onclick="window.location.href='/register'">Go Back</button>
             `);
         } else {
-            userModel.addUser(newUsername, newPassword, userType, name, email, position, (err) => {
+            userModel.addUser(newUsername, newPassword, name, lastName, email, position, userType, isAdmin, (err) => {
                 if (err) {
-                    console.error('Error writing to the CSV file.', err);
+                    console.error('Error writing to the sql database file.', err);
                     res.status(500).send('Internal Server Error');
                 } else {
                     res.send(`
@@ -192,21 +280,22 @@ exports.register = (req, res) => {
 //Function to redirect the user to the their correct dashboard.
 exports.redirectToPage = (userType, res) => {
 
-    // if (this.accountUserType != 'null') {
-    //     userType = this.accountUserType; 
-    // }
-    
-    switch (userType) {
-        case 'admin':
-            res.redirect('/admin');
-            break;
-        case 'mentor':
-            res.redirect('/mentor');
-            break;
-        case 'mentee':
-            res.redirect('/mentee');
-            break;
-        default:
-            res.redirect('/default');
+    if (this.accountUserType != 'null') {
+        userType = this.accountUserType;
+        isAdmin = this.accountIsAdmin; 
     }
+    
+    if (userType == "mentor") {
+        if (isAdmin == "1") {
+
+            res.redirect('/admin');
+        }
+        else {
+            res.redirect('/mentor');
+        }
+    }
+    else if (userType == "mentee") {
+        res.redirect('/mentee');
+    }
+
 }
