@@ -163,7 +163,6 @@ exports.adminUpdatePassword = (username, newPassword, callback) => {
         else {
             callback(true);
         }
-
     });
 };
 
