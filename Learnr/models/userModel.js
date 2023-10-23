@@ -117,7 +117,7 @@ exports.getUserData = (username, callback) => {
                     firstName: results[0].firstName,
                     lastName: results[0].lastName,
                     school: results[0].school,
-                    title: results[0].position,
+                    position: results[0].position,
                     email: results[0].email,
                     sex: results[0].sex,
                     bio: results[0].bio,
