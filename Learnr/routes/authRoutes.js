@@ -5,6 +5,8 @@ const userController = require('../controllers/userController');
 const router = express.Router();
 const path = require('path');
 
+
+
 router.get('/', (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'LearnrLogin Front.html');
     res.sendFile(filePath);
@@ -19,29 +21,46 @@ router.get('/logout',  (req, res) => {
     res.sendFile(filePath);
 });
 
+router.get('/management', userController.checkIfLoggedIn, (req, res) => {
+    // Assuming that your user account information is properly set before calling redirectToPage
+    // You can set this.accountUserType and this.accountIsAdmin appropriately based on your user data
+  
+    if (userController.accountUserType == "mentor") {
+      if (userController.accountIsAdmin == 1) {
+        const filePath = path.join(__dirname, '..', 'views', 'admin', 'supermentor-management.html');
+        res.sendFile(filePath);
+      } else {
+        const filePath = path.join(__dirname, '..', 'views', 'mentor', 'mentor-management.html');
+        res.sendFile(filePath);
+      }
+    } else {
+      res.status(404).send("User type not recognized");
+    }
+});
+
 router.get('/profile', userController.checkIfLoggedIn, userController.getProfile);
 
 router.get('/updateProfile', userController.checkIfLoggedIn, userController.getProfile);
 
 router.post('/updateProfile', userController.checkIfLoggedIn, userController.updateProfile);
 
-router.get('/dashboard', userController.checkIfLoggedIn, userController.redirectToPage);
+router.get('/dashboard', userController.checkIfLoggedIn, (req, res) => {
+  // Assuming that your user account information is properly set before calling redirectToPage
+  // You can set this.accountUserType and this.accountIsAdmin appropriately based on your user data
 
-router.get('/admin', userController.checkIfLoggedIn, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html');
+  if (userController.accountUserType == "mentor") {
+    if (userController.accountIsAdmin == 1) {
+      const filePath = path.join(__dirname, '..', 'views', 'admin', 'supermentor-home.html');
+      res.sendFile(filePath);
+    } else {
+      const filePath = path.join(__dirname, '..', 'views', 'mentor', 'mentor-home.html');
+      res.sendFile(filePath);
+    }
+  } else if (userController.accountUserType == "mentee") {
+    const filePath = path.join(__dirname, '..', 'views', 'mentee', 'mentee-home.html');
     res.sendFile(filePath);
+  }
 });
-
-router.get('/mentor', userController.checkIfLoggedIn, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'views', 'mentor', 'Mentor.html');
-    res.sendFile(filePath);
-});
-
-router.get('/mentee', userController.checkIfLoggedIn, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'views', 'mentee', 'Mentee.html');
-    res.sendFile(filePath);
-});
-
 
 router.get('/register', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'NewUserForm.html');

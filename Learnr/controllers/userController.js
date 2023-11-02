@@ -1,6 +1,12 @@
 //Controller for users. Handles communication between the user views and user models.
 const userModel = require('../models/userModel');
 const pathwayModel = require('../models/pathwaysModel');
+const ejs = require('ejs'); // Import the EJS module
+const path = require('path'); // Import the path module
+const express = require('express');
+const res = express.response;
+const app = express();
+app.use(express.static('public'));
 
 exports.accountUsername = ''; //Global variable used to keep track of which user is currently logged in.
 exports.accountUserType = '';
@@ -70,7 +76,7 @@ exports.login = (req, res) => {
             this.accountUsername = username;
             this.accountUserType = result.userType;
             this.accountIsAdmin = result.isAdmin;
-            this.redirectToPage(result, res);
+            res.redirect("/dashboard");
         }
         else {
             res.redirect('/?error=Invalid%20Credentials');
@@ -88,87 +94,36 @@ exports.logout = (req, res) => {
 exports.getProfile = (req, res) => {
     console.log("inside get profile before calling user data");
 
-    // Fetch user data based on logged-in user.
+    // Fetch user da ta based on logged-in user.
     userModel.getUserData(this.accountUsername, (userData) => {
         console.log("inside get profile calling get userdata");
-        
+
         if (userData) {
-            res.send(`
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>User Profile</title>
-                </head>
-                <body>
-                <div id="userProfile">
-                <h2>User Profile</h2>
 
-                <p><b>Username</b>: ${userData.username}</p>
-                <p><b>User Type</b>: ${userData.userType}</p>
-
-                <form id="editProfileForm" action="/updateProfile" method="POST">
-                    <p><label>
-                        <strong>First Name:</strong>
-                        <input type="text" name="firstName" value="${userData.firstName || ''}" placeholder="Add first name">
-                    </label>
-                    <br></p>
+            var filePath;
+            if (this.accountUserType == "mentor") {
+                if (this.accountIsAdmin == 1) {
+                    filePath = path.join(__dirname, "..", "views", "admin", "supermentor-profile.ejs");
+                } else {
+                    filePath = path.join(__dirname, "..", "views", "mentor", "mentor-profile.ejs");
+                }
+            } else {
+                filePath = path.join(__dirname, "..", "views", "mentee", "mentee-profile.ejs");
+            }
             
-                    <p><label>
-                        <strong>Last Name:</strong>
-                        <input type="text" name="lastName" value="${userData.lastName || ''}" placeholder="Add last name">
-                    </label>
-                    <br></p>
-            
-                    <p><label>
-                        <strong>Email:</strong>
-                        <input type="email" name="email" value="${userData.email || ''}" placeholder="Add email">
-                    </label>
-                    <br></p>
-
-                    <p><label>
-                        <strong>Position:</strong>
-                        <select name="position">
-                            <option value="intern" ${userData.position === 'intern' ? 'selected' : ''}>Intern</option>
-                            <option value="fulltime" ${userData.position === 'fulltime' ? 'selected' : ''}>Full Time</option>
-                        </select>
-                    </label></p>
-
-            
-                    <p><label>
-                        <strong>Bio:</strong>
-                        <textarea name="bio" placeholder="Add bio">${userData.bio || ''}</textarea>
-                    </label>
-                    <br></p>
-            
-                    <p><label>
-                        <strong>School:</strong>
-                        <input type="text" name="school" value="${userData.school || ''}" placeholder="Add school">
-                    </label>
-                    <br></p>
-            
-                    <p><label>
-                        <strong>Interests:</strong>
-                        <input type="text" name="interests" value="${userData.interests || ''}" placeholder="Add interests">
-                    </label>
-                    <br></p>
-
-                    <button type="submit" style="background-color: green; color: white;">Update Profile</button>
-                    
-                    </form>
-
-                    <br><br>
-                    <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
-                    
-                </div>
-                    
-            
-                </body>
-                </html>
-            `);
+            // Render the EJS template with dynamic data
+            ejs.renderFile(filePath, { userData }, (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template', err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.send(html); // Send the rendered HTML
+                }
+            });
         }
     });
 };
+
 
 exports.updateProfile = (req, res) => {
 
@@ -287,23 +242,17 @@ exports.register = (req, res) => {
 }
 
 //Function to redirect the user to the their correct dashboard.
-exports.redirectToPage = (userType, res) => {
-
-    if (this.accountUserType != 'null') {
-        userType = this.accountUserType;
-        isAdmin = this.accountIsAdmin; 
-    }
-    
-    if (userType == "mentor") {
-        if (isAdmin == 1) {
-
+exports.redirectToPage = (req, res) => {
+   
+    if (this.accountUserType == "mentor") {
+        if (this.accountIsAdmin == 1) {
             res.redirect('/admin');
         }
         else {
             res.redirect('/mentor');
         }
     }
-    else if (userType == "mentee") {
+    else if (this.accountUserType == "mentee") {
         res.redirect('/mentee');
     }
 
