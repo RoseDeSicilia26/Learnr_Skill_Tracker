@@ -12,31 +12,40 @@
 <body>
     <h1>Register New User</h1>
     <form id="registerForm" action="/register" method="post">
-        <label for="newUsername">Username:</label>
-        <input type="text" id="newUsername" name="newUsername" required><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
 
         <label for="newPassword">Password:</label>
         <input type="password" id="newPassword" name="newPassword" required><br><br>
-
+    
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
-
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br><br>
-
+    
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required><br><br>
+    
         <label for="position">Position:</label>
-        <input type="text" id="position" name="position" required><br><br>
-
+        <select id="position" name="position">
+            <option value="Intern">Intern</option>
+            <option value="Full Time">Full Time</option>
+        </select><br><br>
+    
         <label for="userType">User Type:</label>
         <select id="userType" name="userType">
-            <option value="admin">Admin</option>
             <option value="mentor">Mentor</option>
             <option value="mentee">Mentee</option>
         </select><br><br>
-
-        <button type="submit">Register</button>
-        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+    
+        <label for="isAdmin">Is Admin?</label>
+        <select id="isAdmin" name="isAdmin">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select><br><br>
+        
+        <button onclick="window.location.href='/admin'" style="background-color: white; color: black;">Return to Dashboard</button>
+        <button type="submit" style="background-color: green; color: white;">Register</button>
     </form>
+    
 </body>
 
 </html>

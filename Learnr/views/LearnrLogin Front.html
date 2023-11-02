@@ -12,8 +12,8 @@
 <body>
     <h1>Learnr</h1>
     <form id="loginForm" action="/login" method="post">
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="username" required><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required><br><br>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br><br>
@@ -21,10 +21,16 @@
         <!-- Display error message if present -->
         <div id="message" style="color: red;"></div>
 
+        
         <button type="submit">Login</button>
 
     </form>
+    
+    <button onclick="location.href='/msal'">Login with Microsoft</button>
+
+    <script src="https://alcdn.msauth.net/lib/1.4.4/js/msal.js"></script>
     <script src = "/Learnr/public/LearnrLogin.js"></script>
+    
     <script>
         // This checks for any errors in the URL
         const url = new URL(window.location.href);
@@ -33,6 +39,7 @@
             document.getElementById("message").innerText = error;
         }
     </script>
+    
 </body>
 
 </html>

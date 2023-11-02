@@ -18,10 +18,10 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     // Get user input
-    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
     // Call the login function in your controller
-    userController.login(username, password);
+    userController.login(email, password);
 });
 

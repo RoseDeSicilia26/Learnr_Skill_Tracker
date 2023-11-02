@@ -1,53 +1,43 @@
 const connection = require('./database');
+const msalInstance = require('./msalConfig');
+const login = require('./msalConfig');
 
-exports.checkuser = (username, password, callback) => {
-    console.log('Checking user');
+exports.login_msal = async (callback) => {
+    // console.log('Logging In');
+  
+    // const loginRequest = {
+    //     scopes: ['openid', 'profile', 'User.Read'], // Adjust the scopes as needed
+    // };
+
+    // try {
+    //     const response = await msalInstance.loginPopup(loginRequest);
+    //     // Handle the response, e.g., update UI
+    //     callback(response);
+    // } catch (error) {
+    //     console.error(error);
+    //     throw error;
+    // }
+    login.login();
+};
+
+exports.checkUser = (email, password, callback) => {
     let found = false;
-    let userType = null;
-    let isAdmin = false;
+    const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE email = ? AND password = ?';
 
-    const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE username = ? AND password = ?';
-
-    connection.query(retrieveQuery, [username, password], (err, results) => {
-        console.log('Retrieving query');
+    connection.query(retrieveQuery, [email, password], (err, results) => {
         if (err) {
-            console.error('Error retrieving data:', err);
+            console.error('Error inserting data:', err);
         } 
         else {
             if (results.length>0){
-                userType = results[0].userType;
-                if (results[0].isAdmin === 1){
-                    isAdmin = true;
-                }
-                console.log(isAdmin);
+                found = {
+                    userType: results[0].userType,  // Access the userType property of the first row
+                    isAdmin: results[0].isAdmin    // Access the isAdmin property of the first row
+                };  
             }
-
-            callback(userType, isAdmin);
+            callback(found);
         }
-
     });
-}
-
-
-exports.validateUsername = (username, callback) => {
-
-    let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
-
-        connection.query(retrieveQuery, username, (err, results) => {
-            if (err) {
-                console.error('Error finding username:', err);
-            } 
-            else {
-                if (results.length>0){
-                    found = true;
-                }
-
-                callback(found);
-            }
-
-        });
-
 }
 
 exports.validateEmail = (email, callback) => {
@@ -57,7 +47,7 @@ exports.validateEmail = (email, callback) => {
 
         connection.query(retrieveQuery, email, (err, results) => {
             if (err) {
-                console.error('Error finding Email:', err);
+                console.error('Error finding email:', err);
             } 
             else {
                 if (results.length>0){
@@ -71,11 +61,11 @@ exports.validateEmail = (email, callback) => {
 
 }
 
-exports.addUser = (newUsername, newPassword, userType, name, email, position, callback) => {
+exports.addUser = (newEmail, newPassword, userType, name, position, callback) => {
 
-    const insertQuery = 'INSERT INTO users (username, password, userType, firstName, email, position) VALUES (?, ?, ?, ?, ?, ?)';
+    const insertQuery = 'INSERT INTO users (email, password, userType, firstName, position) VALUES (?, ?, ?, ?, ?)';
 
-        connection.query(insertQuery, [newUsername, newPassword, userType, name, email, position], (err) => {
+        connection.query(insertQuery, [newEmail, newPassword, userType, name, position], (err) => {
             if (err) {
                 console.error('Error adding user:', err);
             } 
@@ -85,39 +75,18 @@ exports.addUser = (newUsername, newPassword, userType, name, email, position, ca
         });
 }
 
-exports.userExists = (newUsername, callback) => {
-
-    let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
-
-        connection.query(retrieveQuery, newUsername, (err, results) => {
-            if (err) {
-                console.error('Error finding username:', err);
-            } 
-            else {
-                if (results.length>0){
-                    found = true;
-                }
-
-                callback(found);
-            }
-
-        });
-
-}
-
-exports.getUserData = (username, callback) => {
+exports.getUserData = (email, callback) => {
     let userData = null;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
 
-    connection.query(retrieveQuery, username, (err, results) => {
+    connection.query(retrieveQuery, email, (err, results) => {
         if (err) {
-            console.error('Error finding username:', err);
+            console.error('Error finding email:', err);
         } 
         else {
             if (results.length>0){
                 userData = {
-                    name: results[0].firstName,
+                    firstName: results[0].firstName,
                     lastName: results[0].lastName,
                     school: results[0].school,
                     title: results[0].position,
@@ -134,6 +103,22 @@ exports.getUserData = (username, callback) => {
     });
 };
 
+exports.updateProfile = (email, firstName, lastName, position, bio, school, interests, callback) => {
+    const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, position = ?, bio = ?, school = ?, interests = ? WHERE email = ?';
+    connection.query(updateQuery, [firstName, lastName, position, bio, school, interests, email], (err, results) => {
+        if (err) {
+            console.error('Error updating profile:', err);
+            callback(false);
+        } else {
+            if (results.affectedRows > 0) { // Check if the profile was updated successfully
+                callback(true);
+            } else {
+                callback(false);
+            }
+        }
+    });
+
+}
 
 exports.adminUpdatePassword = (email, newPassword, callback) => {
 
@@ -150,30 +135,3 @@ exports.adminUpdatePassword = (email, newPassword, callback) => {
 
     });
 }
-
-
-//exports.getMentee = (mentorUsername, callback) => {
-//     fs.readFile('Relationship.csv', 'utf8', (err, data) => {
-//             // Read the CSV file
-
-//         // Split the CSV data into lines
-//         const lines = data.split('\n');
-    
-//         // Initialize an array to store the separated strings
-//         const menteeList = [];
-
-//         // Iterate through the lines to find the specified value in the additional column
-//         for (const line of lines) {
-
-//             const parts = line.split('.');
-//                 const mentor = parts[0];
-//                 const mentee1 = parts[1];
-//                 const mentee2 = parts[2];
-
-//                 if (mentorUsername === mentor) {
-//                     menteeList.push({ mentee1, mentee2});
-//                     callback(menteeList);
-//                 }
-//         }
-//     })
-// }
