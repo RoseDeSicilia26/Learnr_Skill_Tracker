@@ -19,10 +19,10 @@ document.getElementById('assign-form').addEventListener('submit', function (e) {
 
     // Get user input
     const pathwayID = document.getElementById('pathwayID').value;
-    const menteeUSername = document.getElementById('menteeUsername').value;
+    const menteeEmail = document.getElementById('menteeEmail').value;
     const step = document.getElementById('step').value;
 
     // Call the login function in your controller
-    userController.handlePathways(pathwayID, skill, menteeUSername, step);
+    userController.handlePathways(pathwayID, skill, menteeEmail, step);
 });
 

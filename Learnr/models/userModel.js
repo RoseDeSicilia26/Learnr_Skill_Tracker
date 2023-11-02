@@ -1,12 +1,30 @@
 const connection = require('./database');
+const msalInstance = require('./msalConfig');
+const login = require('./msalConfig');
 
-exports.checkuser = (username, password, callback) => {
-    console.log('Checking user');
+exports.login_msal = async (callback) => {
+    // console.log('Logging In');
+  
+    // const loginRequest = {
+    //     scopes: ['openid', 'profile', 'User.Read'], // Adjust the scopes as needed
+    // };
+
+    // try {
+    //     const response = await msalInstance.loginPopup(loginRequest);
+    //     // Handle the response, e.g., update UI
+    //     callback(response);
+    // } catch (error) {
+    //     console.error(error);
+    //     throw error;
+    // }
+    login.login();
+};
+
+exports.checkUser = (email, password, callback) => {
     let found = false;
-    const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE username = ? AND password = ?';
+    const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE email = ? AND password = ?';
 
-    connection.query(retrieveQuery, [username, password], (err, results) => {
-        console.log('Retrieving query');
+    connection.query(retrieveQuery, [email, password], (err, results) => {
         if (err) {
             console.error('Error inserting data:', err);
         } 
@@ -17,34 +35,9 @@ exports.checkuser = (username, password, callback) => {
                     isAdmin: results[0].isAdmin    // Access the isAdmin property of the first row
                 };  
             }
-
             callback(found);
         }
-
     });
-}
-
-
-exports.validateUsername = (username, callback) => {
-
-    let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
-
-        connection.query(retrieveQuery, username, (err, results) => {
-            if (err) {
-                console.error('Error finding username:', err);
-                callback(found);
-            } 
-            else {
-                if (results.length>0){
-                    found = true;
-                }
-
-                callback(found);
-            }
-
-        });
-
 }
 
 exports.validateEmail = (email, callback) => {
@@ -54,7 +47,7 @@ exports.validateEmail = (email, callback) => {
 
         connection.query(retrieveQuery, email, (err, results) => {
             if (err) {
-                console.error('Error finding username:', err);
+                console.error('Error finding email:', err);
             } 
             else {
                 if (results.length>0){
@@ -68,11 +61,11 @@ exports.validateEmail = (email, callback) => {
 
 }
 
-exports.addUser = (newUsername, newPassword, name, lastName, email, position, userType, isAdmin, callback) => {
+exports.addUser = (newEmail, newPassword, userType, name, position, callback) => {
 
-    const insertQuery = 'INSERT INTO users (username, password, firstName, lastName, email, position, userType, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    const insertQuery = 'INSERT INTO users (email, password, userType, firstName, position) VALUES (?, ?, ?, ?, ?)';
 
-        connection.query(insertQuery, [newUsername, newPassword, name, lastName, email, position, userType, isAdmin], (err) => {
+        connection.query(insertQuery, [newEmail, newPassword, userType, name, position], (err) => {
             if (err) {
                 console.error('Error adding user:', err);
             } 
@@ -82,34 +75,13 @@ exports.addUser = (newUsername, newPassword, name, lastName, email, position, us
         });
 }
 
-exports.userExists = (newUsername, callback) => {
-
-    let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
-
-        connection.query(retrieveQuery, newUsername, (err, results) => {
-            if (err) {
-                console.error('Error finding username:', err);
-            } 
-            else {
-                if (results.length>0){
-                    found = true;
-                }
-
-                callback(found);
-            }
-
-        });
-
-}
-
-exports.getUserData = (username, callback) => {
+exports.getUserData = (email, callback) => {
     let userData = null;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
 
-    connection.query(retrieveQuery, username, (err, results) => {
+    connection.query(retrieveQuery, email, (err, results) => {
         if (err) {
-            console.error('Error finding username:', err);
+            console.error('Error finding email:', err);
         } 
         else {
             if (results.length>0){
@@ -133,10 +105,9 @@ exports.getUserData = (username, callback) => {
     });
 };
 
-exports.updateProfile = (username, firstName, lastName, email, position, bio, school, interests, callback) => {
-    const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, email = ?, position = ?, bio = ?, school = ?, interests = ? WHERE username = ?';
-    console.log("Inisde update profile with my username " + username);
-    connection.query(updateQuery, [firstName, lastName, email, position, bio, school, interests, username], (err, results) => {
+exports.updateProfile = (email, firstName, lastName, position, bio, school, interests, callback) => {
+    const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, position = ?, bio = ?, school = ?, interests = ? WHERE email = ?';
+    connection.query(updateQuery, [firstName, lastName, position, bio, school, interests, email], (err, results) => {
         if (err) {
             console.error('Error updating profile:', err);
             callback(false);
@@ -164,31 +135,5 @@ exports.adminUpdatePassword = (username, newPassword, callback) => {
             callback(true);
         }
     });
-};
+}
 
-
-//exports.getMentee = (mentorUsername, callback) => {
-//     fs.readFile('Relationship.csv', 'utf8', (err, data) => {
-//             // Read the CSV file
-
-//         // Split the CSV data into lines
-//         const lines = data.split('\n');
-    
-//         // Initialize an array to store the separated strings
-//         const menteeList = [];
-
-//         // Iterate through the lines to find the specified value in the additional column
-//         for (const line of lines) {
-
-//             const parts = line.split('.');
-//                 const mentor = parts[0];
-//                 const mentee1 = parts[1];
-//                 const mentee2 = parts[2];
-
-//                 if (mentorUsername === mentor) {
-//                     menteeList.push({ mentee1, mentee2});
-//                     callback(menteeList);
-//                 }
-//         }
-//     })
-// }
