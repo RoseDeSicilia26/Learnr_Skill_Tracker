@@ -43,7 +43,7 @@ exports.checkUser = (email, password, callback) => {
 exports.validateEmail = (email, callback) => {
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
 
         connection.query(retrieveQuery, email, (err, results) => {
             if (err) {
@@ -89,11 +89,13 @@ exports.getUserData = (email, callback) => {
                     firstName: results[0].firstName,
                     lastName: results[0].lastName,
                     school: results[0].school,
-                    title: results[0].position,
+                    position: results[0].position,
                     email: results[0].email,
                     sex: results[0].sex,
                     bio: results[0].bio,
                     interests: results[0].interests,
+                    username: results[0].username,
+                    userType: results[0].userType,
                 };
             }
 
@@ -120,18 +122,18 @@ exports.updateProfile = (email, firstName, lastName, position, bio, school, inte
 
 }
 
-exports.adminUpdatePassword = (email, newPassword, callback) => {
+exports.adminUpdatePassword = (username, newPassword, callback) => {
 
-    const updateQuery = 'UPDATE users SET password = ? WHERE email = ?';
+    const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
 
-    connection.query(updateQuery, [newPassword, email] , (err, results) => {
+    connection.query(updateQuery, [newPassword, username] , (err, results) => {
         if (err) {
-            console.error('Error checking email:', err);
+            console.error('Error checking username:', err);
             callback(false);
         } 
         else {
             callback(true);
         }
-
     });
 }
+

@@ -20,7 +20,7 @@ exports.handlePathways = (req, res) => {
                             res.send(`
                                     This mentee already has this pathway. Please select another.
                                     <br><br>
-                                    <button onclick="window.location.href='/mentor'">Go Back</button>
+                                    <button onclick="window.location.href='/dashboard'">Go Back</button>
                             `);
                         }
                         else {
@@ -33,7 +33,7 @@ exports.handlePathways = (req, res) => {
                                     res.send(`
                                         New pathway assigned successfully!
                                         <br><br>
-                                        <button onclick="window.location.href='/mentor'">Return to Dashboard</button>
+                                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                                         <button onclick="window.location.href='/assign'">Assign a new pathway</button>
                                     `);
                                 }
@@ -151,7 +151,6 @@ exports.getProfile = (req, res) => {
                     <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
                     
                 </div>
-                    
             
                 </body>
                 </html>
@@ -161,7 +160,6 @@ exports.getProfile = (req, res) => {
 };
 
 exports.updateProfile = (req, res) => {
-
     const { firstName, lastName, position, bio, school, interests } = req.body;
     userModel.validateEmail(this.accountEmail, (exists) => {
         if(exists) {
@@ -206,20 +204,22 @@ exports.admin_reset_password = (req, res) => {
     const { email, password, retype_password } = req.body;
     
     userModel.validateEmail(email, (exists) => {
-        if(exists && password === retype_password) {
+
+        if(exists && (password === retype_password)) {
             userModel.adminUpdatePassword(email, password, (success) => {
                 if(success){
                     res.send(`
-                        User successfuflly assigned new password!
+                        User successfully assigned new password!
                         <br><br>
-                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                     `);
                 }
                 else {
                     res.send(`
                         Error resetting password!
                         <br><br>
-                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/admin_reset_password'">Return to Password Reset</button>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                     `);
                 }
             });
@@ -227,11 +227,11 @@ exports.admin_reset_password = (req, res) => {
         else {
             
             if (!exists){
-                res.redirect('/?error=email');
+                res.redirect('/admin_reset_password/?error=email');
             }
             
-            if (password !== retype_password) {
-                res.redirect('/?error=password');
+            else if (password !== retype_password) {
+                res.redirect('/admin_reset_password/?error=password');
             }
         }
     });
@@ -284,7 +284,6 @@ exports.redirectToPage = (userType, res) => {
     else if (userType == "mentee") {
         res.redirect('/mentee');
     }
-
 }
 
 exports.validateRoute = (routeType) => {
