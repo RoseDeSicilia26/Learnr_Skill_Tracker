@@ -48,18 +48,36 @@ router.post('/updateProfile', userController.checkIfLoggedIn, userController.upd
 
 router.get('/dashboard', userController.checkIfLoggedIn, userController.getUserDashboard);
 
-// router.post('/create-pathway', userController.checkIfLoggedIn, userController.createPathway);
+router.get('/admin', userController.checkIfLoggedIn, userController.validateRoute('admin'), (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'admin', 'Supermentor.html');
+    res.sendFile(filePath);
+});
 
-router.get('/register', userController.checkIfLoggedIn, (req, res) => {
+router.get('/mentor', userController.checkIfLoggedIn, userController.validateRoute('mentor'), (req, res, next) => {
+        const filePath = path.join(__dirname, '..', 'views', 'mentor', 'Mentor.html');
+        res.sendFile(filePath);
+});
+
+router.get('/mentee', userController.checkIfLoggedIn, userController.validateRoute('mentee'), (req, res) => {
+        const filePath = path.join(__dirname, '..', 'views', 'mentee', 'Mentee.html');
+        res.sendFile(filePath);
+});
+
+router.get('/register', userController.checkIfLoggedIn, userController.validateRoute('admin'), (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'NewUserForm.html');
     res.sendFile(filePath);
 });
 
 router.post('/register', userController.checkIfLoggedIn, userController.register);
 
-// router.get('/user/profile', userController.checkIfLoggedIn, userController.getProfile);
+router.get('/profile', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'Profile.html');
+    res.sendFile(filePath);
+});
 
-router.get('/admin_reset_password', userController.checkIfLoggedIn, (req, res) => {
+router.get('/user/profile', userController.getProfile);
+
+router.get('/admin_reset_password', userController.checkIfLoggedIn, userController.validateRoute('admin'), (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'ResetUserPasswordForm.html');
     res.sendFile(filePath);
 });
@@ -72,5 +90,21 @@ router.get('/assign', userController.checkIfLoggedIn, (req, res) => {
 });
 
 router.post('/assign', userController.handlePathways);
+
+router.get('/msal', userController.msalLogin);
+
+router.get('/msal', (req, res) => {
+    const authCodeUrlParameters = {
+      scopes: ['User.Read'],
+      redirectUri: 'http://localhost:3000/auth/callback', // This should match your app registration
+    };
+  
+    pca.getAuthCodeUrl(authCodeUrlParameters).then((url) => {
+      res.redirect(url);
+    }).catch((error) => {
+      console.log(error);
+      res.status(500).send('Unable to start Microsoft authentication');
+    });
+  });
 
 module.exports = router;

@@ -1,6 +1,5 @@
 const connection = require('./database');
 
-
 exports.getPathwaySkill = (pathwayID, callback) => {
     let pathSkill;
     const retrieveQuery = 'SELECT skill FROM pathways WHERE pathwayID = ?';
@@ -20,11 +19,11 @@ exports.getPathwaySkill = (pathwayID, callback) => {
 }
 
 //Adds a pathway with a mentee to the csv file.
-exports.addPathway = (pathwayID, menteeUsername, step, callback) => { 
+exports.addPathway = (pathwayID, menteeEmail, step, callback) => { 
 
-    const insertQuery = 'INSERT INTO menteepathways (menteeUsername, pathwayID, step) VALUES (?, ?, ?)';
+    const insertQuery = 'INSERT INTO menteepathways (menteeEmail, pathwayID, step) VALUES (?, ?, ?)';
 
-    connection.query(insertQuery, [menteeUsername, pathwayID, step], (err, results) => {
+    connection.query(insertQuery, [menteeEmail, pathwayID, step], (err, results) => {
         if (err) {
             console.error('Error adding pathway: ', err);
         } 
@@ -34,12 +33,12 @@ exports.addPathway = (pathwayID, menteeUsername, step, callback) => {
 }
 
 //Checks to see if the pathway + mentee does not already exist in the csv file.
-exports.checkPathway = (pathwayID, menteeUsername, callback) => { 
+exports.checkPathway = (pathwayID, menteeEmail, callback) => { 
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeUsername = ? AND pathwayID = ?';
+    const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeEmail = ? AND pathwayID = ?';
 
-    connection.query(retrieveQuery, [menteeUsername, pathwayID], (err, results) => {
+    connection.query(retrieveQuery, [menteeEmail, pathwayID], (err, results) => {
         if (err) {
             found = false;
         } 
