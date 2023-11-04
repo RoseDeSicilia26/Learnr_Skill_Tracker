@@ -29,6 +29,8 @@ exports.checkUser = (email, password, callback) => {
             console.error('Error inserting data:', err);
         } 
         else {
+
+            console.log(results);
             if (results.length>0){
                 found = {
                     userType: results[0].userType,  // Access the userType property of the first row

@@ -111,7 +111,7 @@
                 <form id="loginForm" action="/login" method="post">
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input id="username" type="email" class="form-control" name="username" placeholder="Enter your email"
+                        <input id="email" type="email" class="form-control" name="email" placeholder="Enter your email"
                             required>
                     </div>
                     <div class="form-group">
@@ -145,7 +145,7 @@
 
             if (error) {
                 console.log("We are inside the error on the login");
-                var emailInput = document.getElementById("username");
+                var emailInput = document.getElementById("email");
                 var passwordInput = document.getElementById("password");
                 var message = document.getElementById("message");
 

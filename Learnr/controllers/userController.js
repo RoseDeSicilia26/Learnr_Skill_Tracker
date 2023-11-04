@@ -6,7 +6,7 @@ const path = require('path'); // Import the path module
 const express = require('express');
 const res = express.response;
 const app = express();
-app.use(express.static('public'));
+
 
 exports.accountEmail = ''; //Global variable used to keep track of which user is currently logged in.
 exports.accountUserType = '';
@@ -131,7 +131,7 @@ exports.getUserDashboard = (req, res) => {
             res.sendFile(filePath);
         }
     } else {
-        pathwayModel.getUserPathways(this.accountUsername, (userData) => {
+        pathwayModel.getUserPathways(this.accountEmail, (userData) => {
             if (userData) {
                 
                 var filePath;
