@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Pathway</title>
+</head>
+<body>
+    <h1>Create a New Pathway</h1>
+    <form id="pathwayForm" action="/create-pathway" method="POST">
+        <label for="pathwayName">Pathway Name:</label>
+        <input type="text" id="pathwayName" name="pathwayName" required><br><br>
+
+        <label for="subskills">Subskills:</label>
+        <div id="subskillsContainer">
+            <!-- Minimum of three subskill steps -->
+            <div class="subskill">
+                <input type="text" name="subskill1" placeholder="Subskill 1" required>
+            </div>
+            <div class="subskill">
+                <input type="text" name="subskill2" placeholder="Subskill 2" required>
+            </div>
+            <div class="subskill">
+                <input type="text" name="subskill3" placeholder="Subskill 3" required>
+            </div>
+        </div>
+        
+        <button type="button" id="addSubskill">Add Subskill</button><br><br>
+
+        <input type="submit" value="Create Pathway">
+    </form>
+
+    <script>
+        // JavaScript to dynamically add subskill steps
+        const subskillsContainer = document.getElementById('subskillsContainer');
+        const addSubskillButton = document.getElementById('addSubskill');
+
+        let subskillCount = 3; // Initial subskill count
+
+        addSubskillButton.addEventListener('click', () => {
+            if (subskillCount < 7) { // Limit to a maximum of 7 subskills
+                const subskillDiv = document.createElement('div');
+                subskillDiv.classList.add('subskill');
+
+                const subskillInput = document.createElement('input');
+                subskillInput.type = 'text';
+                subskillInput.name = `subskill${subskillCount + 1}`;
+                subskillInput.placeholder = `Subskill ${subskillCount + 1}`;
+                subskillInput.required = true;
+
+                subskillDiv.appendChild(subskillInput);
+                subskillsContainer.appendChild(subskillDiv);
+                subskillCount++;
+            }
+        });
+    </script>
+</body>
+</html>

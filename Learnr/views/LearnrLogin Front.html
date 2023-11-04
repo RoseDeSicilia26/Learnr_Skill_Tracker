@@ -1,45 +1,164 @@
-<!--File that displays the Login Page-->
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learnr Progress Tracker</title>
+    <title>Login Screen</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0D041A;
+            color: #E2E2F6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #0D041A;
+            color: #E2E2F6;
+            display: flex;
+            border: 2px solid #4672ED;
+            border-radius: 10px;
+            padding: 20px;
+            width: 350px;
+            margin: 0 auto;
+        }
+
+        .login-content {
+            width: 300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Set the background color of input boxes to #0D041A */
+        .form-control {
+            background-color: #0D041A;
+            border: 1px solid #4672ED;
+            color: #E2E2F6;
+        }
+
+        .divider {
+            width: 100%;
+            height: 2px;
+            background-color: #4672ED;
+            margin: 30px 0px 0px 0px;
+        }
+
+        .circle-img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .mt-4 {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form_box,
+        .btn-ms {
+            width: 100%;
+        }
+
+        /* Set the border color of the button to #4672ED */
+        .btn {
+            border: 1px solid #4672ED;
+        }
+
+        /* Add a custom class to set the background color of the "Sign in with Email" button */
+        .btn-signin-email {
+            background-color: #4672ED;
+            color: #E2E2F6;
+        }
+
+        .btn-signin-email:hover {
+            background-color: #0D041A;
+            border: 1px solid #4672ED;
+            color: #E2E2F6;
+        }
+
+        /* Add styles for "Sign in with Microsoft" button */
+        .btn-ms {
+            color: #E2E2F6;
+            border: 1px solid #4672ED;
+            transition: background-color 0.3s;
+        }
+
+        /* Change background color on hover */
+        .btn-ms:hover {
+            background-color: #4672ED;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Learnr</h1>
-    <form id="loginForm" action="/login" method="post">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <!-- Display error message if present -->
-        <div id="message" style="color: red;"></div>
-
-        
-        <button type="submit">Login</button>
-
-    </form>
-    
-    <button onclick="location.href='/msal'">Login with Microsoft</button>
-
-    <script src="https://alcdn.msauth.net/lib/1.4.4/js/msal.js"></script>
-    <script src = "/Learnr/public/LearnrLogin.js"></script>
-    
+    <div class="login-container">
+        <div class="login-content">
+            <h2 class="mb-4">Login to Learnr</h2>
+            <div class="form_box">
+                <form id="loginForm" action="/login" method="post">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" class="form-control" name="email" placeholder="Enter your email"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" class="form-control" name="password"
+                            placeholder="Enter your password" required>
+                    </div>
+                    <!-- Display error message if present -->
+                    <div id="message" style="margin: 0px 0px 15px 0px; color: red;"></div>
+                    <!-- Add the custom class to the "Sign in with Email" button -->
+                    <button type="submit" class="btn btn-primary btn-block btn-signin-email">Sign in with Email</button>
+                </form>
+            </div>
+            <div class="divider"></div>
+            <div class="mt-4">
+                <button class="btn btn-outline-primary btn-ms">
+                    <img src="icons/learnr_mascot.svg" alt="Image" class="circle-img">
+                    Sign in with Microsoft
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
-        // This checks for any errors in the URL
-        const url = new URL(window.location.href);
-        const error = url.searchParams.get("error");
-        if (error) {
-            document.getElementById("message").innerText = error;
-        }
+        // Add an event listener for DOMContentLoaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Your JavaScript code here
+            const url = new URL(window.location.href);
+            const error = url.searchParams.get("error");
+        
+            console.log(error);
+
+            if (error) {
+                console.log("We are inside the error on the login");
+                var emailInput = document.getElementById("email");
+                var passwordInput = document.getElementById("password");
+                var message = document.getElementById("message");
+
+                // Change the border style for each input element
+                emailInput.style.border = "1px solid red";
+                passwordInput.style.border = "1px solid red";
+                message.innerText = "Invalid credentials, try again.";
+            }
+        });
     </script>
-    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
