@@ -38,29 +38,17 @@ router.get('/management', userController.checkIfLoggedIn, (req, res) => {
     }
 });
 
+// router.get('/home', userController.checkIfLoggedIn, userController.getUserPathways);
+
 router.get('/profile', userController.checkIfLoggedIn, userController.getProfile);
 
-router.get('/updateProfile', userController.checkIfLoggedIn, userController.getProfile);
+//router.get('/updateProfile', userController.checkIfLoggedIn, userController.getProfile);
 
 router.post('/updateProfile', userController.checkIfLoggedIn, userController.updateProfile);
 
-router.get('/dashboard', userController.checkIfLoggedIn, (req, res) => {
-  // Assuming that your user account information is properly set before calling redirectToPage
-  // You can set this.accountUserType and this.accountIsAdmin appropriately based on your user data
+router.get('/dashboard', userController.checkIfLoggedIn, userController.getUserDashboard);
 
-  if (userController.accountUserType == "mentor") {
-    if (userController.accountIsAdmin == 1) {
-      const filePath = path.join(__dirname, '..', 'views', 'admin', 'supermentor-home.html');
-      res.sendFile(filePath);
-    } else {
-      const filePath = path.join(__dirname, '..', 'views', 'mentor', 'mentor-home.html');
-      res.sendFile(filePath);
-    }
-  } else if (userController.accountUserType == "mentee") {
-    const filePath = path.join(__dirname, '..', 'views', 'mentee', 'mentee-home.html');
-    res.sendFile(filePath);
-  }
-});
+// router.post('/create-pathway', userController.checkIfLoggedIn, userController.createPathway);
 
 router.get('/register', userController.checkIfLoggedIn, (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'NewUserForm.html');

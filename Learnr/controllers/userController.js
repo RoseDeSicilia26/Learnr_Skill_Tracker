@@ -8,8 +8,8 @@ const res = express.response;
 const app = express();
 app.use(express.static('public'));
 
-exports.accountUsername = ''; //Global variable used to keep track of which user is currently logged in.
-exports.accountUserType = '';
+exports.accountUsername = 'mentee@mentee.com'; //Global variable used to keep track of which user is currently logged in.
+exports.accountUserType = 'mentee';
 exports.accountIsAdmin = 0;
 
 exports.handlePathways = (req, res) => {
@@ -123,6 +123,49 @@ exports.getProfile = (req, res) => {
         }
     });
 };
+
+exports.getUserDashboard = (req, res) => {
+
+    if (this.accountUserType == "mentor") {
+        if (this.accountIsAdmin == 1) {
+            var filePath = path.join(__dirname, "..", "views", "admin", "supermentor-home.html");
+            res.sendFile(filePath);
+        } else {
+            var filePath = path.join(__dirname, "..", "views", "mentor", "mentor-home.html");
+            res.sendFile(filePath);
+        }
+    } else {
+        pathwayModel.getUserPathways(this.accountUsername, (userData) => {
+            if (userData) {
+                
+                var filePath;
+                filePath = path.join(__dirname, "..", "views",  "mentee", "user_pathways_tracker.ejs");
+                
+                // Render the EJS template with dynamic data
+                ejs.renderFile(filePath, { userData }, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+            }
+        });
+    }
+    
+}
+
+
+exports.verifyIsAmin = (req, res) => {
+
+    if (this.accountUserType == "mentor" && this.accountIsAdmin == 1) {
+        res = true;
+    } else {
+        res = false;
+    }
+}
+
 
 
 exports.updateProfile = (req, res) => {

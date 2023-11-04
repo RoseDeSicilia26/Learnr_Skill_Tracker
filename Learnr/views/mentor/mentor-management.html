@@ -8,52 +8,51 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Set the background color of the entire website */
-        body {
+         /* Set the background color of the entire website */
+         body {
             background-color: #0D041A;
             color: #E2E2F6; /* Set text color to white */
             margin: 0; /* Remove default margin */
         }
-
+    
         /* Apply a border with soft corners to both columns */
         .left-column, .right-column {
-            border: 2px solid #4672ED;
-            height: 1000px;
-            min-height: 1000px;
             border-radius: 10px;
             padding: 20px;
             margin: 10px; /* Adjust margin for spacing */
-            background-color: #0D041A; /* Background color for columns */
+            height: 1000px;
+            min-height: 1000px;
         }
-
+    
         /* Define the maximum width for the left column and minimum width for the right column */
         .left-column {
             width: 250px;
             max-width: 250px;
             min-width: 250px;
+            background-color: #141236;
         }
-
+    
         .right-column {
-            min-width: 500px;
+            min-width: 700px;
             flex-grow: 1;
             max-width: 2000px;
         }
-
+    
         /* Create a container to hold the two columns and apply some spacing */
         .container {
             display: flex; /* Make the columns display side by side */
-            margin: 0px 10px 0px 10px; /* Remove default margin */
         }
-
+    
         /* Customize the offcanvas */
         .offcanvas.show {
             transform: translateX(0);
             visibility: visible;
         }
-
+    
         .offcanvas-header {
             padding: 0px 0px 20px 0px;
         }
-
+    
         /* Center both image and text horizontally */
         .nav-link {
             display: flex;
@@ -61,18 +60,16 @@
             padding: 8px; /* Add padding to the nav-link */
             transition: background-color 0.3s, color 0.3s; /* Add a transition effect for background color and text color */
             border-radius: 10px; /* Make the border corners more circular */
-            background-color: #0D041A; /* Set background color to match the page */
+            background-color: #141236; /* Set background color to match the page */
             color: #E2E2F6; /* Text color for nav links */
         }
-
+    
         /* Apply a border and change background color on hover */
         .nav-link:hover {
             border: 1px solid #4672ED; /* Add a border on hover */
             background-color: #4672ED; /* Change background color on hover */
-            color: #E2E2F6; /* Text color on hover */
         }
-
-        /* Change the fill color of SVG icons on hover */
+    
         .circle-img {
             margin-right: 10px; /* Add spacing between the image and text */
             width: 30px; /* Set the maximum width for the SVG image */
@@ -94,31 +91,31 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link" href="/dashboard">
-                                <img src="../../public/icons/home_navbar_icons.svg" alt="Image" class="circle-img">
+                                <img src="../public/icons/home_navbar_icons.svg" alt="Image" class="circle-img">
                                 Home
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <img src="icons/pathways_navbar_icons.svg" alt="Image" class="circle-img">
+                                <img src="../public/icons/pathways_navbar_icons.svg" alt="Image" class="circle-img">
                                 Pathways
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/profile">
-                                <img src="icons/profile_navbar_icons.svg" alt="Image" class="circle-img">
+                                <img src="../public/icons/profile_navbar_icons.svg" alt="Image" class="circle-img">
                                 Profile
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/management">
-                                <img src="icons/management_navbar_icons.svg" alt="Image" class="circle-img">
+                                <img src="../public/icons/management_navbar_icons.svg" alt="Image" class="circle-img">
                                 Management
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">
-                                <img src="icons/signout_navbar_icons.svg" alt="Image" class="circle-img">
+                                <img src="../public/icons/signout_navbar_icons.svg" alt="Image" class="circle-img">
                                 Sign Out
                             </a>
                         </li>
