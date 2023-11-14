@@ -120,6 +120,32 @@ exports.getProfile = (req, res) => {
     });
 };
 
+exports.getPathwayData = (req, res) => {
+
+    const pathway_id = req.params.courseId;
+    console.log(pathway_id)
+
+    if (this.accountUserType == "mentee") {
+        pathwayModel.getPathwayData(this.accountEmail, pathway_id, (pathway) => {
+            if (pathway) {
+                
+                var filePath;
+                filePath = path.join(__dirname, "..", "views",  "mentee", "user_skill_tracker.ejs");
+                
+                // Render the EJS template with dynamic data
+                ejs.renderFile(filePath, { pathway }, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+            }
+        });
+    }
+}
+
 exports.getUserDashboard = (req, res) => {
 
     if (this.accountUserType == "mentor") {
