@@ -45,7 +45,7 @@ exports.checkUser = (email, password, callback) => {
 exports.validateEmail = (email, callback) => {
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
 
         connection.query(retrieveQuery, email, (err, results) => {
             if (err) {
@@ -96,7 +96,6 @@ exports.getUserData = (email, callback) => {
                     sex: results[0].sex,
                     bio: results[0].bio,
                     interests: results[0].interests,
-                    username: results[0].username,
                     userType: results[0].userType,
                 };
             }

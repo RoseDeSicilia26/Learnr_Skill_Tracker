@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Mentor Dashboard</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -124,59 +124,11 @@
             </div>
         </nav>
         <main class="right-column">
-            <div id="userProfile">
-                <h2>User Profile</h2>
-        
-                <p><b>Email</b>: <%= userData.email %></p>
-                <p><b>User Type</b>: <%= userData.userType %></p>
-        
-                <form id="editProfileForm" action="/updateProfile" method="POST">
-                    <p><label>
-                        <strong>First Name:</strong>
-                        <input type="text" name="firstName" value="<%= userData.firstName || '' %>" placeholder="Add first name">
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>Last Name:</strong>
-                        <input type="text" name="lastName" value="<%= userData.lastName || '' %>" placeholder="Add last name">
-                    </label><br></p>
-        
-                    <p><label>
-                        <strong>Position:</strong>
-                        <select name="position">
-                            <option value="intern" <%= userData.position === 'intern' ? 'selected' : '' %>>Intern</option>
-                            <option value="fulltime" <%= userData.position === 'fulltime' ? 'selected' : '' %>>Full Time</option>
-                        </select>
-                    </label></p>
-        
-            
-                    <p><label>
-                        <strong>Bio:</strong>
-                        <textarea name="bio" placeholder="Add bio"><%= userData.bio || '' %></textarea>
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>School:</strong>
-                        <input type="text" name="school" value="<%= userData.school || '' %>" placeholder="Add school">
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>Interests:</strong>
-                        <input type="text" name="interests" value="<%= userData.interests || '' %>" placeholder="Add interests">
-                    </label><br></p>
-        
-                    <button type="submit" style="background-color: green; color: white;">Update Profile</button>
-                </form>
-        
-                <br><br>
-                <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
-            </div>
-        
+            <!-- Main content goes here -->
         </main>
-<script src = "/Learnr/Learnr/public/Profile.js"></script>
-</div>
+    </div>
 
-<!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
+    <!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
 n

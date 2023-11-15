@@ -160,6 +160,8 @@ exports.getUserDashboard = (req, res) => {
         pathwayModel.getUserPathways(this.accountEmail, (userData) => {
             if (userData) {
                 
+                console.log(userData[0].pathwayID);
+
                 var filePath;
                 filePath = path.join(__dirname, "..", "views",  "mentee", "user_pathways_tracker.ejs");
                 
@@ -172,6 +174,10 @@ exports.getUserDashboard = (req, res) => {
                         res.send(html); // Send the rendered HTML
                     }
                 });
+            }
+            else {
+                var filePath = path.join(__dirname, "..", "views",  "mentee", "empty_pathways_tracker.html");
+                res.sendFile(filePath)
             }
         });
     }

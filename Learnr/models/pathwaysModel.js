@@ -57,7 +57,7 @@ exports.getUserPathways = (menteeUsername, callback) => {
     let found = false;
     // const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeUsername = ?';
 
-    const retrieveQuery = 'SELECT pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step, pathways.pathwayID as pathway_id FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeUsername = ?';
+    const retrieveQuery = 'SELECT pathways.pathwayDescription as pathway_description, pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step, pathways.pathwayID as pathway_id FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeEmail = ?';
     
 
     connection.query(retrieveQuery, menteeUsername, (err, results) => {
@@ -69,21 +69,24 @@ exports.getUserPathways = (menteeUsername, callback) => {
                 found = results;
                 console.log(results);
             }
+            else {
+                found = false;
+            }
         }
         callback(found);
     });    
 }
 
 // get all pathways associated to user
-exports.getPathwayData = (menteeUsername, pathway_id, callback) => { 
+exports.getPathwayData = (menteeEmail, pathway_id, callback) => { 
 
     let found = false;
     // const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeUsername = ?';
 
-    const retrieveQuery = 'SELECT pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeUsername = ? and pathways.pathwayID = ?';
+    const retrieveQuery = 'SELECT pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeEmail = ? and pathways.pathwayID = ?';
     
 
-    connection.query(retrieveQuery, [menteeUsername, pathway_id], (err, results) => {
+    connection.query(retrieveQuery, [menteeEmail, pathway_id], (err, results) => {
         if (err) {
             found = false;
         } 
