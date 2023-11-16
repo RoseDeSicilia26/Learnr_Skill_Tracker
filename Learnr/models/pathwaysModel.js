@@ -50,17 +50,66 @@ exports.checkPathway = (pathwayID, menteeEmail, callback) => {
         callback(found);
     });    
 }
+// get all mentees associated to mentor
+exports.getMentorMentees = (mentorEmail, callback) => { 
+
+    let found = false;
+
+    const retrieveQuery = 'SELECT users.firstName AS mentee_name, pathways.pathwayDescription AS pathway_description, pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step FROM relationships JOIN menteepathways ON relationships.menteeEmail = menteepathways.menteeEmail JOIN pathways ON menteepathways.pathwayID = pathways.pathwayID JOIN users ON relationships.menteeEmail = users.email WHERE relationships.mentorEmail = ?';
+
+    connection.query(retrieveQuery, mentorEmail, (err, results) => {
+        if (err) {
+            found = false;
+        } 
+        else {
+            if (results.length>0){
+                found = results;
+                console.log(results);
+            }
+            else {
+                found = false;
+            }
+        }
+        callback(found);
+    });    
+}
 
 // get all pathways associated to user
-exports.getUserPathways = (menteeUsername, callback) => { 
+exports.getMenteePathwaysAll = (menteeEmail, callback) => { 
 
     let found = false;
     // const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeUsername = ?';
 
-    const retrieveQuery = 'SELECT pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeUsername = ?';
+    const retrieveQuery = 'SELECT pathways.pathwayDescription as pathway_description, pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step, pathways.pathwayID as pathway_id FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeEmail = ?';
     
 
-    connection.query(retrieveQuery, menteeUsername, (err, results) => {
+    connection.query(retrieveQuery, menteeEmail, (err, results) => {
+        if (err) {
+            found = false;
+        } 
+        else {
+            if (results.length>0){
+                found = results;
+                console.log(results);
+            }
+            else {
+                found = false;
+            }
+        }
+        callback(found);
+    });    
+}
+
+// get single pathway associated to user
+exports.getMenteePathwaysSingle = (menteeEmail, pathway_id, callback) => { 
+
+    let found = false;
+    // const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeUsername = ?';
+
+    const retrieveQuery = 'SELECT pathways.skill AS pathway_name, pathways.numberOfSteps AS number_of_steps, menteepathways.step AS current_step FROM pathways JOIN menteepathways ON pathways.pathwayID = menteepathways.pathwayID WHERE menteepathways.menteeEmail = ? and pathways.pathwayID = ?';
+    
+
+    connection.query(retrieveQuery, [menteeEmail, pathway_id], (err, results) => {
         if (err) {
             found = false;
         } 

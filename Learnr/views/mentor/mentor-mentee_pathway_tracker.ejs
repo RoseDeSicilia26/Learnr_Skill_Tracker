@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Skill Tracker</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-         /* Set the background color of the entire website */
-         body {
+        /* Set the background color of the entire website */
+        body {
             background-color: #0D041A;
             color: #E2E2F6; /* Set text color to white */
             margin: 0; /* Remove default margin */
@@ -73,8 +73,81 @@
             margin-right: 10px; /* Add spacing between the image and text */
             width: 30px; /* Set the maximum width for the SVG image */
         }
+    
+        .tracker {
+            margin: 30px 0;
+        }
+    
+        .tracker-heading {
+            text-align: center; /* Center align the text */
+            margin-bottom: 1rem; /* Add some space below the heading */
+        }
+    
+        .tracker-card {
+            border: none;
+            border-radius: 20px;
+            background: #0D041A; /* Dark background */
+            margin-bottom: 20px;
+            border: 1px solid #4672ED;
+        }
+    
+        .progress {
+            background-color: #0D041A;
+            border: 1px solid #4672ED;
+            border-radius: 20px;
+            height: 30px;
+        }
+    
+        .progress-bar {
+            background-color: #4672ED; /* Lighter blue */
+            border-radius: 20px;
+            height: 30px;
+        }
+    
+        /* Utility classes for padding and margins */
+        .py-1 { padding-top: 1rem; padding-bottom: 1rem; }
+        .my-1 { margin-top: 1rem; margin-bottom: 1rem; }
+        .px-2 { padding-left: 2rem; padding-right: 2rem; }
+        .mx-2 { margin-left: 2rem; margin-right: 2rem; }
+
+        .unified-card {
+        background-color: #0D041A;
+        border-radius: 20px;
+        color: white;
+        margin: auto;
+        overflow: hidden;
+        margin-top: 20px;
+        border: 1px solid #4672ED;
+    }
+
+    .fixed-layout-card {
+        background-color: #0D041A;
+        border-radius: 20px;
+        color: white;
+        margin: auto;
+        overflow-x: hidden; /* Hide horizontal overflow */
+    }
+
+    .card-body {
+        display: flex; /* Use flexbox for layout */
+        flex-wrap: nowrap; /* Prevent flex items from wrapping */
+    }
+
+    .circle {
+        background-color: #4672ED;
+        border-radius: 100%;
+        width: 150px;        
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #fff;
+        border: 1px solid #4672ED;
+    }
 
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -124,59 +197,47 @@
             </div>
         </nav>
         <main class="right-column">
-            <div id="userProfile">
-                <h2>User Profile</h2>
-        
-                <p><b>Email</b>: <%= userData.email %></p>
-                <p><b>User Type</b>: <%= userData.userType %></p>
-        
-                <form id="editProfileForm" action="/updateProfile" method="POST">
-                    <p><label>
-                        <strong>First Name:</strong>
-                        <input type="text" name="firstName" value="<%= userData.firstName || '' %>" placeholder="Add first name">
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>Last Name:</strong>
-                        <input type="text" name="lastName" value="<%= userData.lastName || '' %>" placeholder="Add last name">
-                    </label><br></p>
-        
-                    <p><label>
-                        <strong>Position:</strong>
-                        <select name="position">
-                            <option value="intern" <%= userData.position === 'intern' ? 'selected' : '' %>>Intern</option>
-                            <option value="fulltime" <%= userData.position === 'fulltime' ? 'selected' : '' %>>Full Time</option>
-                        </select>
-                    </label></p>
-        
-            
-                    <p><label>
-                        <strong>Bio:</strong>
-                        <textarea name="bio" placeholder="Add bio"><%= userData.bio || '' %></textarea>
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>School:</strong>
-                        <input type="text" name="school" value="<%= userData.school || '' %>" placeholder="Add school">
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>Interests:</strong>
-                        <input type="text" name="interests" value="<%= userData.interests || '' %>" placeholder="Add interests">
-                    </label><br></p>
-        
-                    <button type="submit" style="background-color: green; color: white;">Update Profile</button>
-                </form>
-        
-                <br><br>
-                <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
-            </div>
-        
+            <div class="tracker">
+
+                <div class="tracker-heading">
+                    <h1>Mentee Progress Tracker</h1>
+                </div>
+                <br>
+                <% if(userData == false) { %>
+                    <br><br> 
+                    <h5>No mentees to show</h5>
+                <% } else { %>
+                    <% userData.forEach(function(mentee) { %>
+                        <div class="card unified-card">
+                            <div class="card-body row no-gutters">
+                                <!-- Circle with 'R' -->
+                                <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                    <div class="circle"><%= mentee.mentee_name %></div>
+                                </div>
+                                <!-- Course content -->
+                                <div class="col-md-9">
+                                    <div class="card-block px-3">
+                                        <h5 class="card-title"><%= mentee.pathway_name %></h5>
+                                        <p class="card-text"><%= mentee.pathway_description %></p>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar" role="progressbar" style="width: <%= (mentee.current_step / mentee.number_of_steps * 100).toFixed(2) %>%"  aria-valuenow="<%= mentee.current_step %>" aria-valuemin="0" aria-valuemax="<%= mentee.number_of_steps %>"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <small><%= mentee.number_of_steps %> Skills</small>
+                                            <small><%= mentee.current_step %> / <%= mentee.number_of_steps %></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% }  %>     
+                </div>
+
         </main>
-<script src = "/Learnr/Learnr/public/Profile.js"></script>
 </div>
 
-<!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
-n
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

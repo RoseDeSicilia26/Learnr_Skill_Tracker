@@ -26,7 +26,8 @@ exports.handlePathways = (req, res) => {
                             res.send(`
                                     This mentee already has this pathway. Please select another.
                                     <br><br>
-                                    <button onclick="window.location.href='/dashboard'">Go Back</button>
+                                    <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                                    <button onclick="window.location.href='/assign'">Return to Assign Page</button>
                             `);
                         }
                         else {
@@ -159,25 +160,21 @@ exports.getProfile = (req, res) => {
     });
 };
 
-exports.getUserDashboard = (req, res) => {
+// the skill tracker dashboard
+exports.getPathwayData = (req, res) => {
 
-    if (this.accountUserType == "mentor") {
-        if (this.accountIsAdmin == 1) {
-            var filePath = path.join(__dirname, "..", "views", "admin", "supermentor-home.html");
-            res.sendFile(filePath);
-        } else {
-            var filePath = path.join(__dirname, "..", "views", "mentor", "mentor-home.html");
-            res.sendFile(filePath);
-        }
-    } else {
-        pathwayModel.getUserPathways(this.accountEmail, (userData) => {
-            if (userData) {
+    const pathway_id = req.params.courseId;
+    console.log(pathway_id)
+
+    if (this.accountUserType == "mentee") {
+        pathwayModel.getMenteePathwaysSingle(this.accountEmail, pathway_id, (pathway) => {
+            if (pathway) {
                 
                 var filePath;
-                filePath = path.join(__dirname, "..", "views",  "mentee", "user_pathways_tracker.ejs");
+                filePath = path.join(__dirname, "..", "views",  "mentee", "user_skill_tracker.ejs");
                 
                 // Render the EJS template with dynamic data
-                ejs.renderFile(filePath, { userData }, (err, html) => {
+                ejs.renderFile(filePath, { pathway }, (err, html) => {
                     if (err) {
                         console.error('Error rendering EJS template', err);
                         res.status(500).send('Internal Server Error');
@@ -188,7 +185,56 @@ exports.getUserDashboard = (req, res) => {
             }
         });
     }
+}
+
+// the main dashbaord
+exports.getUserDashboard = (req, res) => {
+
+    if (this.accountUserType == "mentor") {
+        if (this.accountIsAdmin == 1) {
+            var filePath = path.join(__dirname, "..", "views", "admin", "supermentor-mentee_pathway_tracker.ejs");
+            pathwayModel.getMentorMentees(this.accountEmail, (userData) => {
+                // Render the EJS template with dynamic data
+                ejs.renderFile(filePath, { userData }, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
     
+            });
+        } else {
+            var filePath = path.join(__dirname, "..", "views", "mentor", "mentor-mentee_pathway_tracker.ejs");
+            pathwayModel.getMentorMentees(this.accountEmail, (userData) => {
+                // Render the EJS template with dynamic data
+                ejs.renderFile(filePath, { userData }, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+    
+            });
+        }
+    } else if (this.accountUserType == "mentee") {
+        var filePath = path.join(__dirname, "..", "views",  "mentee", "user_pathways_tracker.ejs");
+        pathwayModel.getMenteePathwaysAll(this.accountEmail, (userData) => {
+            // Render the EJS template with dynamic data
+            ejs.renderFile(filePath, { userData }, (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template', err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.send(html); // Send the rendered HTML
+                }
+            });
+
+        });
+    }  
 }
 
 
@@ -222,23 +268,13 @@ exports.updateProfile = (req, res) => {
                 }
             });
         }
-        else {
-            res.send(`
-                <p>Error finding account!</p>
-                <div>
-                <button onclick="window.location.href='/'" style="background-color: green; color: white;">Return to Login</button>
-                </div>
-            `);
-}
     });
 }
 
 exports.checkIfLoggedIn = (req, res, next) => {
     if (this.accountEmail === '' && this.accountUserType === '') {
-        res.send(`
-            <p>Not logged in<p>
-            <button onclick="location.href='/'" style="background-color: green; color: white;">Return to Log In</button>
-        `);
+        const filePath = path.join(__dirname, '..', 'views', 'LearnrLogin Front.html');
+        res.sendFile(filePath);
     } else {
         next(); // Move to the next middleware or route handler
     }

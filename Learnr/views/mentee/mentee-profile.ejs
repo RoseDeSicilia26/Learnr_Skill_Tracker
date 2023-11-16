@@ -95,7 +95,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link">
                                 <img src="icons/pathways_navbar_icons.svg" alt="Image" class="circle-img">
                                 Pathways
                             </a>
@@ -121,7 +121,7 @@
             <div id="userProfile">
                 <h2>User Profile</h2>
         
-                <p><b>Username</b>: <%= userData.username %></p>
+                <p><b>Email</b>: <%= userData.email %></p>
                 <p><b>User Type</b>: <%= userData.userType %></p>
         
                 <form id="editProfileForm" action="/updateProfile" method="POST">
@@ -134,12 +134,7 @@
                         <strong>Last Name:</strong>
                         <input type="text" name="lastName" value="<%= userData.lastName || '' %>" placeholder="Add last name">
                     </label><br></p>
-            
-                    <p><label>
-                        <strong>Email:</strong>
-                        <input type="email" name="email" value="<%= userData.email || '' %>" placeholder="Add email">
-                    </label><br></p>
-        
+
                     <p><label>
                         <strong>Position:</strong>
                         <select name="position">

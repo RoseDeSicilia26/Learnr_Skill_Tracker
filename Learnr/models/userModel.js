@@ -94,6 +94,7 @@ exports.getUserData = (email, callback) => {
                     sex: results[0].sex,
                     bio: results[0].bio,
                     interests: results[0].interests,
+                    userType: results[0].userType,
                 };
             }
 

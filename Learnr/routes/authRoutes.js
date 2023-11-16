@@ -5,8 +5,6 @@ const userController = require('../controllers/userController');
 const router = express.Router();
 const path = require('path');
 
-
-
 router.get('/', (req, res) => {
     const filePath = path.join(__dirname, '..', 'views', 'LearnrLogin Front.html');
     res.sendFile(filePath);
@@ -22,9 +20,7 @@ router.get('/logout',  (req, res) => {
 });
 
 router.get('/management', userController.checkIfLoggedIn, (req, res) => {
-    // Assuming that your user account information is properly set before calling redirectToPage
-    // You can set this.accountUserType and this.accountIsAdmin appropriately based on your user data
-  
+
     if (userController.accountUserType == "mentor") {
       if (userController.accountIsAdmin == 1) {
         const filePath = path.join(__dirname, '..', 'views', 'admin', 'supermentor-management.html');
@@ -38,11 +34,15 @@ router.get('/management', userController.checkIfLoggedIn, (req, res) => {
     }
 });
 
-// router.get('/home', userController.checkIfLoggedIn, userController.getUserPathways);
+router.get('/skill_tracker', userController.checkIfLoggedIn,  (req, res) => {
+
+  const filePath = path.join(__dirname, '..', 'views', 'mentee', 'user_skill_tracker.html');
+  res.sendFile(filePath);
+});
+
+router.get('/pathways/pathway_:courseId', userController.checkIfLoggedIn, userController.getPathwayData);
 
 router.get('/profile', userController.checkIfLoggedIn, userController.getProfile);
-
-//router.get('/updateProfile', userController.checkIfLoggedIn, userController.getProfile);
 
 router.post('/updateProfile', userController.checkIfLoggedIn, userController.updateProfile);
 
