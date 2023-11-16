@@ -29,8 +29,6 @@ exports.checkUser = (email, password, callback) => {
             console.error('Error inserting data:', err);
         } 
         else {
-
-            console.log(results);
             if (results.length>0){
                 found = {
                     userType: results[0].userType,  // Access the userType property of the first row
@@ -45,7 +43,7 @@ exports.checkUser = (email, password, callback) => {
 exports.validateEmail = (email, callback) => {
 
     let found = false;
-    const retrieveQuery = 'SELECT * FROM users WHERE username = ?';
+    const retrieveQuery = 'SELECT * FROM users WHERE email = ?';
 
         connection.query(retrieveQuery, email, (err, results) => {
             if (err) {
@@ -91,13 +89,11 @@ exports.getUserData = (email, callback) => {
                     firstName: results[0].firstName,
                     lastName: results[0].lastName,
                     school: results[0].school,
-                    position: results[0].position,
+                    title: results[0].position,
                     email: results[0].email,
                     sex: results[0].sex,
                     bio: results[0].bio,
                     interests: results[0].interests,
-                    username: results[0].username,
-                    userType: results[0].userType,
                 };
             }
 
@@ -124,13 +120,13 @@ exports.updateProfile = (email, firstName, lastName, position, bio, school, inte
 
 }
 
-exports.adminUpdatePassword = (username, newPassword, callback) => {
+exports.adminUpdatePassword = (email, newPassword, callback) => {
 
-    const updateQuery = 'UPDATE users SET password = ? WHERE username = ?';
+    const updateQuery = 'UPDATE users SET password = ? WHERE email = ?';
 
-    connection.query(updateQuery, [newPassword, username] , (err, results) => {
+    connection.query(updateQuery, [newPassword, email] , (err, results) => {
         if (err) {
-            console.error('Error checking username:', err);
+            console.error('Error checking email:', err);
             callback(false);
         } 
         else {
@@ -139,3 +135,18 @@ exports.adminUpdatePassword = (username, newPassword, callback) => {
     });
 }
 
+exports.getMentees = (callback) => {
+
+    const retrieveQuery = 'SELECT * FROM users WHERE userType = ?';
+    let userType = 'mentee';
+
+    connection.query(retrieveQuery, userType, (err, results) => {
+        if (err){
+            console.error('Error Getting Users:', err);
+        }
+        else{
+            callback(results);
+        }
+    })
+
+}
