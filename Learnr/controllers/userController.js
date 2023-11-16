@@ -26,7 +26,8 @@ exports.handlePathways = (req, res) => {
                             res.send(`
                                     This mentee already has this pathway. Please select another.
                                     <br><br>
-                                    <button onclick="window.location.href='/dashboard'">Go Back</button>
+                                    <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                                    <button onclick="window.location.href='/assign'">Return to Assign Page</button>
                             `);
                         }
                         else {
@@ -127,7 +128,7 @@ exports.getPathwayData = (req, res) => {
     console.log(pathway_id)
 
     if (this.accountUserType == "mentee") {
-        pathwayModel.getUserAssignedSinglePathwayData(this.accountEmail, pathway_id, (pathway) => {
+        pathwayModel.getMenteePathwaysSingle(this.accountEmail, pathway_id, (pathway) => {
             if (pathway) {
                 
                 var filePath;
@@ -228,23 +229,13 @@ exports.updateProfile = (req, res) => {
                 }
             });
         }
-        else {
-            res.send(`
-                <p>Error finding account!</p>
-                <div>
-                <button onclick="window.location.href='/'" style="background-color: green; color: white;">Return to Login</button>
-                </div>
-            `);
-}
     });
 }
 
 exports.checkIfLoggedIn = (req, res, next) => {
     if (this.accountEmail === '' && this.accountUserType === '') {
-        res.send(`
-            <p>Not logged in<p>
-            <button onclick="location.href='/'" style="background-color: green; color: white;">Return to Log In</button>
-        `);
+        const filePath = path.join(__dirname, '..', 'views', 'LearnrLogin Front.html');
+        res.sendFile(filePath);
     } else {
         next(); // Move to the next middleware or route handler
     }
