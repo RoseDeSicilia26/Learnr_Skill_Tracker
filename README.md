@@ -242,7 +242,7 @@ The `database.js` module establishes and manages the connection to the MySQL dat
 - The established connection is exported so that it can be utilized by other modules within the application.
 
 
-## **LearnrLogin.js**
+## **learnrLogin.js**
 - Frontend event listener on the 'loginForm': Captures login form submission and calls the `login` function from the userController.
 
 
