@@ -30,6 +30,7 @@ Follow the steps below to set up the project on your local machine:
      npm install csv-parser
      npm install mysql2
      npm install @azure/msal-node
+     npm install ejs
      ```
 
 4. **MySQL Setup**:
