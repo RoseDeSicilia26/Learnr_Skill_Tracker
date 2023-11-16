@@ -187,11 +187,25 @@ exports.disablePathway = (pathwayID, callback) => {
     });
 };
 
-exports.getPathways = (callback) => {
-    let call = false;
-    const retrieveQuery = 'SELECT * FROM pathways';
+exports.enablePathway = (pathwayID, callback) => {
+    const isEnabled = 1;
+    const updateQuery = 'UPDATE pathways SET isEnabled = ? WHERE pathwayID = ?';
 
-    connection.query(retrieveQuery, (err, results) => {
+    connection.query(updateQuery, [isEnabled, pathwayID], (err, results) => {
+        if (err) {
+            console.error('Error Removing Pathway:', err);
+            callback(false); // Call the callback with an error indicator
+        } else {
+            callback(true);  // Call the callback indicating success
+        }
+    });
+};
+
+exports.getEnabledPathways = (callback) => {
+    let call = false;
+    const retrieveQuery = 'SELECT * FROM pathways WHERE isEnabled = ?';
+
+    connection.query(retrieveQuery, 1, (err, results) => {
         if (err){
             console.error('Error Getting Pathways:', err);
         }
@@ -201,4 +215,35 @@ exports.getPathways = (callback) => {
             callback(results, call);
         }
     })
+}
+
+exports.getDisabledPathways = (callback) => {
+    let call = false;
+    const retrieveQuery = 'SELECT * FROM pathways WHERE isEnabled = ?';
+
+    connection.query(retrieveQuery, 0, (err, results) => {
+        if (err){
+            console.error('Error Getting Pathways:', err);
+        }
+        else{
+            console.log(results);
+            call = true;
+            callback(results, call);
+        }
+    })
+}
+
+exports.getMenteePathways = (menteeEmail, callback) => {
+
+    const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeEmail = ?';
+
+    connection.query(retrieveQuery, menteeEmail, (err, results) => {
+        if (err){
+            console.error('Error Getting Users:', err);
+        }
+        else{
+            callback(results);
+        }
+    })
+
 }

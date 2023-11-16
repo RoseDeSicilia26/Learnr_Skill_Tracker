@@ -320,7 +320,9 @@ exports.admin_reset_password = (req, res) => {
 
 //Register a user by first checking to see if the email already exsists in the csv file. If not, writes to the csv file with the new information.
 exports.register = (req, res) => {
-    const { newEmail, newPassword, name, position, userType} = req.body;
+    const newEmail = req.body.email;
+    const {newPassword, name, position, userType} = req.body;
+    console.log(newEmail);
     userModel.validateEmail(newEmail, (exists) => {
         if (exists) {
             res.send(`
@@ -336,7 +338,7 @@ exports.register = (req, res) => {
                     res.send(`
                         New user registered successfully!
                         <br><br>
-                        <button onclick="window.location.href='/admin'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
                     `);
                 }
             });
@@ -408,22 +410,44 @@ exports.msalLogin = (req, res) => {
     userModel.login_msal(handleResponse);
 };
 
-exports.getPathways = (req, res) =>{
-    pathwayModel.getPathways((pathways, call) =>{
-        if(call){
-            var filePath;
-            filePath = path.join(__dirname, "..", "views",  "admin", "supermentor-deletePathway.ejs");
+exports.getPathways = (req, res, callback) =>{
+    let manipulation = req.body;
 
-            ejs.renderFile(filePath, {pathways}, (err, html) => {
-                if (err) {
-                    console.error('Error rendering EJS template', err);
-                    res.status(500).send('Internal Server Error');
-                } else {
-                    res.send(html); // Send the rendered HTML
-                }
-            });
-        }
-    });
+    if (manipulation === 0){
+        pathwayModel.getEnabledPathways((pathways, call) =>{
+            if(call){
+                var filePath;
+                filePath = path.join(__dirname, "..", "views",  "admin", "supermentor-deletePathway.ejs");
+
+                ejs.renderFile(filePath, {pathways}, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+            }   
+        });
+    }
+
+    else if (manipulation === 1){
+        pathwayModel.getDisabledPathways((pathways, call) => {
+            if(call){
+                var filePath;
+                filePath = path.join(__dirname, "..", "views",  "admin", "supermentor-enablePathways.ejs");
+
+                ejs.renderFile(filePath, {pathways}, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+            }
+        })
+    }
 }
 
 
@@ -438,7 +462,7 @@ exports.removePathway = (req, res) =>{
                         Pathway removed successfully!
                         <br><br>
                         <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
-                        <button onclick="window.location.href='/removePathway'">Remove another Pathway</button>
+                        <button onclick="window.location.href='/getPathways'">Remove another Pathway</button>
                         `);
                 }
                 else {
@@ -458,4 +482,65 @@ exports.removePathway = (req, res) =>{
                         `);
         }
     });
+}
+
+exports.enablePathway = (req, res) => {
+    const pathwayID = req.body.pathway;
+    pathwayModel.enablePathway(pathwayID, (result) => {
+        if (result){
+            res.send(`
+                Pathway Enabled successfully!
+                <br><br>
+                <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                <button onclick="window.location.href='/getPathways'">Enable another Pathway</button>
+                `);
+        }
+        else {
+            res.send(`
+                Error Enabling Pathway.
+                <br><br>
+                <button onclick="window.location.href='/assign'">Go Back</button>
+                `);
+        }
+    });
+}
+
+exports.getMentees = (req, res) => {
+    userModel.getMentees(this.accountEmail, (mentees) => {
+        var filePath;
+        if (this.accountUserType === 'mentor'){
+                filePath = path.join(__dirname, "..", "views",  "mentor", "mentees.ejs");
+            if (this.accountIsAdmin){
+                filePath = path.join(__dirname, "..", "views",  "admin", "mentees.ejs");
+            }
+        }
+                ejs.renderFile(filePath, {mentees}, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+    })
+}
+
+exports.getUserPathways = (req, res) => {
+    let menteeEmail = req.body;
+    pathwayModel.getMenteePathways(menteeEmail, (pathways) => {
+        if (this.accountUserType === 'mentor'){
+            filePath = path.join(__dirname, "..", "views",  "mentor", "menteePathways.ejs");
+        if (this.accountIsAdmin){
+            filePath = path.join(__dirname, "..", "views",  "admin", "menteePathways.ejs");
+        }
+    }
+            ejs.renderFile(filePath, {pathways}, (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template', err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.send(html); // Send the rendered HTML
+                }
+            });
+    })
 }

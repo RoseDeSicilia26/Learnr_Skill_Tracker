@@ -136,12 +136,11 @@ exports.adminUpdatePassword = (email, newPassword, callback) => {
     });
 }
 
-exports.getMentees = (callback) => {
+exports.getMentees = (mentorEmail, callback) => {
 
-    const retrieveQuery = 'SELECT * FROM users WHERE userType = ?';
-    let userType = 'mentee';
+    const retrieveQuery = 'SELECT * FROM relationships WHERE mentorEmail = ?';
 
-    connection.query(retrieveQuery, userType, (err, results) => {
+    connection.query(retrieveQuery, mentorEmail, (err, results) => {
         if (err){
             console.error('Error Getting Users:', err);
         }
