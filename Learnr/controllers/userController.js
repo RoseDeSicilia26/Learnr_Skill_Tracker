@@ -68,6 +68,45 @@ exports.handlePathways = (req, res) => {
     });
 }
 
+exports.assign = (req, res) => {
+
+    var filePath;
+    filePath = path.join(__dirname, "..", "views", "assignForm.ejs");
+
+    userModel.getMentees((users) => {
+        pathwayModel.getPathways((pathways) => {
+            ejs.renderFile(filePath, { users, pathways }, (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template', err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.send(html); // Send the rendered HTML
+                }
+            });
+        })
+    })
+}
+
+exports.assignPathway = (req, res) => {
+    const mentee = req.body.users;
+    const pathway = req.body.pathway;
+    console.log(mentee, pathway);
+    pathwayModel.addPathway(pathway, mentee, (result) => {
+        if (result) {
+            console.error('Error Adding Pathway:', err);
+            res.status(500).send('Internal Server Error');
+        } 
+        else {
+            res.send(`
+                New pathway assigned successfully!
+                <br><br>
+                <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                <button onclick="window.location.href='/assign'">Assign a new pathway</button>
+            `);
+        }
+    })
+}
+
 //Logs in the user by checking their information against the csv file and redirecting them to the appropriate page based on the type of permission in the file.
 exports.login = (req, res) => { 
     const {email, password} = req.body;
@@ -332,3 +371,55 @@ exports.msalLogin = (req, res) => {
     // Call the login_msal function with the user type and callback
     userModel.login_msal(handleResponse);
 };
+
+exports.getPathways = (req, res) =>{
+    pathwayModel.getPathways((pathways, call) =>{
+        if(call){
+            var filePath;
+            filePath = path.join(__dirname, "..", "views",  "admin", "supermentor-deletePathway.ejs");
+
+            ejs.renderFile(filePath, {pathways}, (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template', err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.send(html); // Send the rendered HTML
+                }
+            });
+        }
+    });
+}
+
+
+exports.removePathway = (req, res) =>{
+    const pathwayID = req.body.pathway;
+    pathwayModel.disablePathway(pathwayID, (result) => {
+        if (result){
+            pathwayModel.removePathway(pathwayID, (result) =>{
+        
+                if (result){
+                    res.send(`
+                        Pathway removed successfully!
+                        <br><br>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/removePathway'">Remove another Pathway</button>
+                        `);
+                }
+                else {
+                    res.send(`
+                        Error Removing Pathway.
+                        <br><br>
+                        <button onclick="window.location.href='/assign'">Go Back</button>
+                        `);
+                }
+            });
+        }
+        else {
+            res.send(`
+                        Error Updating Pathways.
+                        <br><br>
+                        <button onclick="window.location.href='/assign'">Go Back</button>
+                        `);
+        }
+    });
+}
