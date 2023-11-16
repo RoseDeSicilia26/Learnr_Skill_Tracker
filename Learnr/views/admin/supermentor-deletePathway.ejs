@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentor Dashboard</title>
+    <title>Profile</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Set the background color of the entire website */
-        body {
+         /* Set the background color of the entire website */
+         body {
             background-color: #0D041A;
             color: #E2E2F6; /* Set text color to white */
             margin: 0; /* Remove default margin */
@@ -95,7 +95,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link">
+                            <a class="nav-link" href="/#">
                                 <img src="icons/pathways_navbar_icons.svg" alt="Image" class="circle-img">
                                 Pathways
                             </a>
@@ -124,16 +124,29 @@
             </div>
         </nav>
         <main class="right-column">
-            <h1>SuperMentor Dashboard</h1>
-            <button onclick="location.href='/register'">Add New User</button>
-            <button onclick="location.href='/admin_reset_password'">Reset User Password</button>
-            <button onclick="location.href='/assign'">Assign a Pathway</button>
-            <button onclick="location.href='/getPathways'">Delete a Pathway</button>
-            <button onclick="location.href='/updateProgress'">Update Mentee Progress</button>
+            <div id="removePathway">
+                <h2>Remove a Pathway</h2>
+                <form id="removePathwayform" action="/removePathway" method="POST">
+                    <p><label>
+                        <strong>Select a Pathway:</strong>
+                        <select name="pathway">
+                            <% pathways.forEach(pathways => { %>
+                                <option value="<%= pathways.pathwayID %>"><%= pathways.skill %></option>
+                            <% }); %>
+                        </select>
+                    </label></p>
+        
+                    <button type="submit" style="background-color: rgb(245, 70, 70); color: white;">Remove</button>
+                </form>
+        
+                <br><br>
+                <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
+            </div>
+        
         </main>
-    </div>
+</div>
 
-    <!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
+<!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
 n

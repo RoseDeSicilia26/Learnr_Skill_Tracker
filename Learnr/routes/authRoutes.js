@@ -70,11 +70,6 @@ router.get('/register', userController.checkIfLoggedIn, userController.validateR
 
 router.post('/register', userController.checkIfLoggedIn, userController.register);
 
-router.get('/profile', (req, res) => {
-    const filePath = path.join(__dirname, '..', 'views', 'Profile.html');
-    res.sendFile(filePath);
-});
-
 router.get('/user/profile', userController.getProfile);
 
 router.get('/admin_reset_password', userController.checkIfLoggedIn, userController.validateRoute('admin'), (req, res) => {
@@ -84,12 +79,18 @@ router.get('/admin_reset_password', userController.checkIfLoggedIn, userControll
 
 router.post('/admin_reset_password', userController.admin_reset_password);
 
-router.get('/assign', userController.checkIfLoggedIn, (req, res) => {
-    const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
-    res.sendFile(filePath);
-});
+// router.get('/assign', userController.checkIfLoggedIn, (req, res) => {
+//   const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
+//   res.sendFile(filePath);
+// });
 
-router.post('/assign', userController.handlePathways);
+router.get('/assign', userController.assign);
+
+router.post('/assignPathway',  userController.assignPathway);
+
+router.get('/getPathways', userController.getPathways);
+
+router.post('/removePathway', userController.removePathway);
 
 router.get('/msal', userController.msalLogin);
 
