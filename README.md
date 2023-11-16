@@ -8,7 +8,7 @@ The Learnr is an application designed to manage user interactions, track skills,
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Directory Structure](#directory-structure)
-- [Backend File Function Descriptions](#backend_file_function_drescription)
+- [Backend File Function Descriptions](#backend-file-function-drescription)
 
 ## Installation
 
