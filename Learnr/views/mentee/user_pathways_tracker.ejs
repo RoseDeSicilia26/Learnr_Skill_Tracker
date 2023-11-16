@@ -177,25 +177,30 @@
                     <h1>Tracker</h1>
                 </div>
                 <br>
-                <% userData.forEach(function(course) { %>
-                    <a href="/pathways/pathway_<%= course.pathway_id %>">
-                    <div class="card course-card">
-                        <div class="card-body">
-                            <h2 class="card-title"><%= course.pathway_name %></h2>
-                            <p class="card-text"><%= course.pathway_description %></p>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" role="progressbar" style="width: <%= (course.current_step / course.number_of_steps * 100).toFixed(2) %>%"  aria-valuenow="<%= course.current_step %>" aria-valuemin="0" aria-valuemax="<%= course.number_of_steps %>"></div>
-                            </div>
-                            <!-- <small>1%</small> -->
-                            <div class="d-flex justify-content-between mb-2">
-                                <small><%= course.number_of_steps %> Skills</small>
-                                <small><%= course.current_step %> / <%= course.number_of_steps %></small>
+                <% if(userData == false) { %>
+                    <br><br> 
+                    <h5>No pathways to shows</h5>
+                <% } else { %>
+                    <% userData.forEach(function(course) { %>
+                        <a href="/pathways/pathway_<%= course.pathway_id %>">
+                        <div class="card course-card">
+                            <div class="card-body">
+                                <h2 class="card-title"><%= course.pathway_name %></h2>
+                                <p class="card-text"><%= course.pathway_description %></p>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: <%= (course.current_step / course.number_of_steps * 100).toFixed(2) %>%"  aria-valuenow="<%= course.current_step %>" aria-valuemin="0" aria-valuemax="<%= course.number_of_steps %>"></div>
+                                </div>
+                                <!-- <small>1%</small> -->
+                                <div class="d-flex justify-content-between mb-2">
+                                    <small><%= course.number_of_steps %> Skills</small>
+                                    <small><%= course.current_step %> / <%= course.number_of_steps %></small>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    </a>
-                    <br><br>
-                <% }); %>
+                        </a>
+                        <br><br>
+                    <% }); %>
+                <% }  %>   
                 </div>
 
         </main>

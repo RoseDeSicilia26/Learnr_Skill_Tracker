@@ -120,13 +120,14 @@ exports.getProfile = (req, res) => {
     });
 };
 
+// the skill tracker dashboard
 exports.getPathwayData = (req, res) => {
 
     const pathway_id = req.params.courseId;
     console.log(pathway_id)
 
     if (this.accountUserType == "mentee") {
-        pathwayModel.getPathwayData(this.accountEmail, pathway_id, (pathway) => {
+        pathwayModel.getUserAssignedSinglePathwayData(this.accountEmail, pathway_id, (pathway) => {
             if (pathway) {
                 
                 var filePath;
@@ -146,25 +147,13 @@ exports.getPathwayData = (req, res) => {
     }
 }
 
+// the main dashbaord
 exports.getUserDashboard = (req, res) => {
 
     if (this.accountUserType == "mentor") {
         if (this.accountIsAdmin == 1) {
-            var filePath = path.join(__dirname, "..", "views", "admin", "supermentor-home.html");
-            res.sendFile(filePath);
-        } else {
-            var filePath = path.join(__dirname, "..", "views", "mentor", "mentor-home.html");
-            res.sendFile(filePath);
-        }
-    } else {
-        pathwayModel.getUserPathways(this.accountEmail, (userData) => {
-            if (userData) {
-                
-                console.log(userData[0].pathwayID);
-
-                var filePath;
-                filePath = path.join(__dirname, "..", "views",  "mentee", "user_pathways_tracker.ejs");
-                
+            var filePath = path.join(__dirname, "..", "views", "admin", "supermentor-mentee_pathway_tracker.ejs");
+            pathwayModel.getMentorMentees(this.accountEmail, (userData) => {
                 // Render the EJS template with dynamic data
                 ejs.renderFile(filePath, { userData }, (err, html) => {
                     if (err) {
@@ -174,14 +163,38 @@ exports.getUserDashboard = (req, res) => {
                         res.send(html); // Send the rendered HTML
                     }
                 });
-            }
-            else {
-                var filePath = path.join(__dirname, "..", "views",  "mentee", "empty_pathways_tracker.html");
-                res.sendFile(filePath)
-            }
-        });
-    }
     
+            });
+        } else {
+            var filePath = path.join(__dirname, "..", "views", "mentor", "mentor-mentee_pathway_tracker.ejs");
+            pathwayModel.getMentorMentees(this.accountEmail, (userData) => {
+                // Render the EJS template with dynamic data
+                ejs.renderFile(filePath, { userData }, (err, html) => {
+                    if (err) {
+                        console.error('Error rendering EJS template', err);
+                        res.status(500).send('Internal Server Error');
+                    } else {
+                        res.send(html); // Send the rendered HTML
+                    }
+                });
+    
+            });
+        }
+    } else if (this.accountUserType == "mentee") {
+        var filePath = path.join(__dirname, "..", "views",  "mentee", "user_pathways_tracker.ejs");
+        pathwayModel.getMenteePathwaysAll(this.accountEmail, (userData) => {
+            // Render the EJS template with dynamic data
+            ejs.renderFile(filePath, { userData }, (err, html) => {
+                if (err) {
+                    console.error('Error rendering EJS template', err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.send(html); // Send the rendered HTML
+                }
+            });
+
+        });
+    }  
 }
 
 
