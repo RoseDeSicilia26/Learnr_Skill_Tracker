@@ -122,7 +122,6 @@ exports.updateProfile = (email, firstName, lastName, position, bio, school, inte
 }
 
 exports.adminUpdatePassword = (email, newPassword, callback) => {
-
     const updateQuery = 'UPDATE users SET password = ? WHERE email = ?';
 
     connection.query(updateQuery, [newPassword, email] , (err, results) => {
@@ -152,7 +151,6 @@ exports.getMentees = (mentorEmail, callback) => {
 }
 
 exports.changeStep = (menteeEmail, pathwayID, step, callback) => {
-    console.log(menteeEmail, pathwayID, step.steps);
     const updateQuery = 'UPDATE menteepathways SET step = ? WHERE menteeEmail = ? AND pathwayID = ?';
 
     connection.query(updateQuery, [step.steps, menteeEmail, pathwayID], (err, results) => {

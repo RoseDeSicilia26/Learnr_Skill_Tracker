@@ -75,7 +75,6 @@ exports.assign = (req, res) => {
     filePath = path.join(__dirname, "..", "views", "assignForm.ejs");
 
     userModel.getMentees(this.accountEmail, (users) => {
-        console.log(users);
         pathwayModel.getEnabledPathways((pathways) => {
             ejs.renderFile(filePath, { users, pathways }, (err, html) => {
                 if (err) {
@@ -92,7 +91,7 @@ exports.assign = (req, res) => {
 exports.assignPathway = (req, res) => {
     const mentee = req.body.users;
     const pathway = req.body.pathway;
-    console.log(mentee, pathway);
+
     pathwayModel.addPathway(pathway, mentee, (result) => {
         if (result) {
             console.error('Error Adding Pathway:', err);
@@ -323,7 +322,6 @@ exports.admin_reset_password = (req, res) => {
 exports.register = (req, res) => {
     const newEmail = req.body.email;
     const {newPassword, name, position, userType} = req.body;
-    console.log(newEmail);
     userModel.validateEmail(newEmail, (exists) => {
         if (exists) {
             res.send(`
@@ -531,7 +529,7 @@ let skillToChange = '';
 exports.getUserPathways = (req, res) => {
     let menteeEmail = req.body.mentee;
     menteeToChange = menteeEmail;
-    console.log(menteeEmail);
+
     pathwayModel.getMenteePathways(menteeEmail, (pathways) => {
         if (this.accountUserType === 'mentor'){
             if (this.accountIsAdmin){
@@ -554,10 +552,9 @@ exports.getUserPathways = (req, res) => {
 
 exports.updatePathways = (req, res) => {
     let skill = req.body.pathways;
-    console.log(skill);
     skillToChange = skill;
+
     pathwayModel.getPathwaySteps(skill, (steps) => {
-        console.log(steps);
         if (this.accountUserType === 'mentor'){
             if (this.accountIsAdmin){
                 filePath = path.join(__dirname, "..", "views",  "admin", "pathwaySteps.ejs");
@@ -601,4 +598,25 @@ exports.updateStep = (req, res) => {
         })  
     });
     
+}
+
+exports.createPathway = (req, res) => {
+    const {pathwayName, numberOfSteps, pathwayDescription} = req.body;
+    pathwayModel.createPathway (pathwayName, numberOfSteps, pathwayDescription, (results) => {
+        if (results){
+            res.send(`
+                        Pathway Added Successfully!
+                        <br><br>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/createPathway'">Create another pathway</button>
+                        `);
+        }
+        else {
+            res.send(`
+                        Error Adding Pathway.
+                        <br><br>
+                        <button onclick="window.location.href='/createPathway'">Go Back</button>
+                        `);
+        }
+    })
 }

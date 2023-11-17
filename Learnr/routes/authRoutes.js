@@ -103,6 +103,13 @@ router.post('/updateStep', userController.checkIfLoggedIn, userController.update
 
 router.post('/getMenteePathways', userController.checkIfLoggedIn, userController.getUserPathways);
 
+router.get('/createPathway', userController.checkIfLoggedIn, (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'createPathwayForm.html');
+    res.sendFile(filePath);
+});
+
+router.post('/create', userController.checkIfLoggedIn, userController.createPathway);
+
 router.get('/msal', userController.msalLogin);
 
 router.get('/msal', (req, res) => {

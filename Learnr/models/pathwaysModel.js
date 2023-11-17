@@ -64,7 +64,6 @@ exports.getMentorMentees = (mentorEmail, callback) => {
         else {
             if (results.length>0){
                 found = results;
-                console.log(results);
             }
             else {
                 found = false;
@@ -90,7 +89,6 @@ exports.getMenteePathwaysAll = (menteeEmail, callback) => {
         else {
             if (results.length>0){
                 found = results;
-                console.log(results);
             }
             else {
                 found = false;
@@ -116,7 +114,6 @@ exports.getMenteePathwaysSingle = (menteeEmail, pathway_id, callback) => {
         else {
             if (results.length>0){
                 found = results;
-                console.log(results);
             }
         }
         callback(found);
@@ -210,7 +207,6 @@ exports.getEnabledPathways = (callback) => {
             console.error('Error Getting Pathways:', err);
         }
         else{
-            console.log(results);
             call = true;
             callback(results, call);
         }
@@ -226,7 +222,6 @@ exports.getDisabledPathways = (callback) => {
             console.error('Error Getting Pathways:', err);
         }
         else{
-            console.log(results);
             call = true;
             callback(results, call);
         }
@@ -242,7 +237,6 @@ exports.getMenteePathways = (menteeEmail, callback) => {
             console.error('Error Getting Users:', err);
         }
         else{
-            console.log(results);
             callback(results);
         }
     });
@@ -252,14 +246,11 @@ exports.getMenteePathways = (menteeEmail, callback) => {
 exports.getPathwaySteps = (skill, callback) => {
     const retrieveQuery = 'SELECT * FROM pathways WHERE skill = ?';
 
-    console.log(skill);
-
     connection.query(retrieveQuery, skill, (err, results) =>{
         if(err){
             console.error('Error getting steps:', err);
         }
         else{
-            console.log(results);
             const numberOfSteps = results[0] ? results[0].numberOfSteps : null;
             callback(numberOfSteps);
         }
@@ -274,9 +265,23 @@ exports.getPathwayID = (skill, callback) => {
             console.error('Error getting steps:', err);
         }
         else{
-            console.log(results);
             const pathwayId = results[0] ? results[0].pathwayID : null;
             callback(pathwayId);
+        }
+    });
+}
+
+exports.createPathway = (pathwayName, numberOfSteps, pathwayDescription, callback) => {
+    console.log(pathwayName, numberOfSteps, pathwayDescription);
+    const insertQuery = 'INSERT INTO pathways (skill, numberOfSteps, pathwayDescription) VALUES (?, ?, ?)';
+
+    connection.query(insertQuery, [pathwayName, numberOfSteps, pathwayDescription], (err, results) =>{
+        if(err){
+            console.error('Error Adding Pathway:', err);
+            callabck(false);
+        }
+        else{
+            callback(true);
         }
     });
 }
