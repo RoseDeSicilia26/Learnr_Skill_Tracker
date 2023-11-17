@@ -74,8 +74,9 @@ exports.assign = (req, res) => {
     var filePath;
     filePath = path.join(__dirname, "..", "views", "assignForm.ejs");
 
-    userModel.getMentees((users) => {
-        pathwayModel.getPathways((pathways) => {
+    userModel.getMentees(this.accountEmail, (users) => {
+        console.log(users);
+        pathwayModel.getEnabledPathways((pathways) => {
             ejs.renderFile(filePath, { users, pathways }, (err, html) => {
                 if (err) {
                     console.error('Error rendering EJS template', err);
@@ -524,16 +525,22 @@ exports.getMentees = (req, res) => {
                 });
     })
 }
+let menteeToChange ='';
+let skillToChange = '';
 
 exports.getUserPathways = (req, res) => {
-    let menteeEmail = req.body;
+    let menteeEmail = req.body.mentee;
+    menteeToChange = menteeEmail;
+    console.log(menteeEmail);
     pathwayModel.getMenteePathways(menteeEmail, (pathways) => {
         if (this.accountUserType === 'mentor'){
-            filePath = path.join(__dirname, "..", "views",  "mentor", "menteePathways.ejs");
-        if (this.accountIsAdmin){
+            if (this.accountIsAdmin){
             filePath = path.join(__dirname, "..", "views",  "admin", "menteePathways.ejs");
+            }
+            else {
+              filePath = path.join(__dirname, "..", "views",  "mentor", "menteePathways.ejs");  
+            }
         }
-    }
             ejs.renderFile(filePath, {pathways}, (err, html) => {
                 if (err) {
                     console.error('Error rendering EJS template', err);
@@ -543,4 +550,55 @@ exports.getUserPathways = (req, res) => {
                 }
             });
     })
+}
+
+exports.updatePathways = (req, res) => {
+    let skill = req.body.pathways;
+    console.log(skill);
+    skillToChange = skill;
+    pathwayModel.getPathwaySteps(skill, (steps) => {
+        console.log(steps);
+        if (this.accountUserType === 'mentor'){
+            if (this.accountIsAdmin){
+                filePath = path.join(__dirname, "..", "views",  "admin", "pathwaySteps.ejs");
+            } else {
+                filePath = path.join(__dirname, "..", "views",  "mentor", "pathwaySteps.ejs");  
+            }
+        }
+        
+        ejs.renderFile(filePath, { steps }, (err, html) => {
+            if (err) {
+                console.error('Error rendering EJS template', err);
+                res.status(500).send('Internal Server Error');
+            } else {
+                res.send(html); // Send the rendered HTML
+            }
+        });
+    });
+};
+
+exports.updateStep = (req, res) => {
+    let step = req.body;
+    pathwayModel.getPathwayID (skillToChange, (pathwayID) => {
+        userModel.changeStep (menteeToChange, pathwayID, step, (results) => {
+            if (results){
+                if (results){
+                    res.send(`
+                        Mentee Progress Changed Successfully!
+                        <br><br>
+                        <button onclick="window.location.href='/dashboard'">Return to Dashboard</button>
+                        <button onclick="window.location.href='/updateProgress'">Change another mentee's progress</button>
+                        `);
+                }
+                else {
+                    res.send(`
+                        Error Changing Progress.
+                        <br><br>
+                        <button onclick="window.location.href='/updateProgress'">Go Back</button>
+                        `);
+                } 
+            }
+        })  
+    });
+    
 }

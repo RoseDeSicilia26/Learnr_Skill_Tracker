@@ -150,3 +150,20 @@ exports.getMentees = (mentorEmail, callback) => {
     })
 
 }
+
+exports.changeStep = (menteeEmail, pathwayID, step, callback) => {
+    console.log(menteeEmail, pathwayID, step.steps);
+    const updateQuery = 'UPDATE menteepathways SET step = ? WHERE menteeEmail = ? AND pathwayID = ?';
+
+    connection.query(updateQuery, [step.steps, menteeEmail, pathwayID], (err, results) => {
+        if (err){
+            console.error('Error Changing Pathway Step:', err);
+            callback(false);
+        }
+        else{
+            callback(true);
+        }
+    })
+
+}
+

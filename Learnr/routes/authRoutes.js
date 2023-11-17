@@ -97,6 +97,10 @@ router.post('/enable', userController.checkIfLoggedIn, userController.enablePath
 
 router.get('/updateProgress', userController.checkIfLoggedIn, userController.getMentees);
 
+router.post('/updatePathways', userController.checkIfLoggedIn, userController.updatePathways);
+
+router.post('/updateStep', userController.checkIfLoggedIn, userController.updateStep);
+
 router.post('/getMenteePathways', userController.checkIfLoggedIn, userController.getUserPathways);
 
 router.get('/msal', userController.msalLogin);

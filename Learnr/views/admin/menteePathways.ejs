@@ -126,12 +126,12 @@
         <main class="right-column">
             <div id="menteePathways">
                 <h2>Choose a Pathway</h2>
-                <form id="menteePathwaysform" action="/getPathways" method="POST">
+                <form id="menteePathwaysform" action="/updatePathways" method="POST">
                     <p><label>
                         <strong>Select a pathway to update:</strong>
                         <select name="pathways">
                             <% pathways.forEach(pathways => { %>
-                                <option value="<%= pathways.pathwayID %>"><%= pathway.pathway.skill %></option>
+                                <option value="<%= pathways.pathwayID %>"><%= pathways.skill %></option>
                             <% }); %>
                         </select>
                     </label></p>
@@ -148,5 +148,4 @@
 
 <!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
-n
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.n

@@ -214,7 +214,7 @@ exports.getEnabledPathways = (callback) => {
             call = true;
             callback(results, call);
         }
-    })
+    });
 }
 
 exports.getDisabledPathways = (callback) => {
@@ -230,20 +230,53 @@ exports.getDisabledPathways = (callback) => {
             call = true;
             callback(results, call);
         }
-    })
+    });
 }
 
 exports.getMenteePathways = (menteeEmail, callback) => {
 
-    const retrieveQuery = 'SELECT * FROM menteepathways WHERE menteeEmail = ?';
+    const retrieveQuery = 'SELECT menteepathways.menteeEmail, pathways.skill FROM menteepathways JOIN pathways ON menteepathways.pathwayID = pathways.pathwayID WHERE menteepathways.menteeEmail = ?';
 
     connection.query(retrieveQuery, menteeEmail, (err, results) => {
         if (err){
             console.error('Error Getting Users:', err);
         }
         else{
+            console.log(results);
             callback(results);
         }
-    })
+    });
 
+}
+
+exports.getPathwaySteps = (skill, callback) => {
+    const retrieveQuery = 'SELECT * FROM pathways WHERE skill = ?';
+
+    console.log(skill);
+
+    connection.query(retrieveQuery, skill, (err, results) =>{
+        if(err){
+            console.error('Error getting steps:', err);
+        }
+        else{
+            console.log(results);
+            const numberOfSteps = results[0] ? results[0].numberOfSteps : null;
+            callback(numberOfSteps);
+        }
+    });
+}
+
+exports.getPathwayID = (skill, callback) => {
+    const retrieveQuery = 'SELECT * FROM pathways WHERE skill = ?';
+
+    connection.query(retrieveQuery, skill, (err, results) =>{
+        if(err){
+            console.error('Error getting steps:', err);
+        }
+        else{
+            console.log(results);
+            const pathwayId = results[0] ? results[0].pathwayID : null;
+            callback(pathwayId);
+        }
+    });
 }
