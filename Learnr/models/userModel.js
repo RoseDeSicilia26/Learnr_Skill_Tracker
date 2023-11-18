@@ -20,6 +20,22 @@ exports.login_msal = async (callback) => {
     login.login();
 };
 
+exports.deleteUserAccount = (email, callback) => {
+
+    let found = false;
+    const retrieveQuery = 'DELETE badges, pathways, relationships, users FROM users LEFT JOIN menteebadges AS badges ON users.email = badges.menteeEmail LEFT JOIN menteepathways AS pathways ON users.email = pathways.menteeEmail LEFT JOIN relationships ON users.email = relationships.mentorEmail OR users.email = relationships.menteeEmail WHERE users.email = ?';
+
+    connection.query(retrieveQuery, email, (err, results) => {
+        if (err) {
+            console.error('Error deleting user:', err);
+        } 
+        else {
+            found = true;
+            callback(found);
+        }
+    });
+}
+
 exports.checkUser = (email, password, callback) => {
     let found = false;
     const retrieveQuery = 'SELECT userType, isAdmin FROM users WHERE email = ? AND password = ?';
