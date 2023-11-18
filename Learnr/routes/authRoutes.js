@@ -81,18 +81,36 @@ router.get('/admin_reset_password', userController.checkIfLoggedIn, userControll
 
 router.post('/admin_reset_password', userController.admin_reset_password);
 
-// router.get('/assign', userController.checkIfLoggedIn, (req, res) => {
-//   const filePath = path.join(__dirname, '..', 'views', 'assignForm.html');
-//   res.sendFile(filePath);
-// });
+router.get('/assign', userController.checkIfLoggedIn, userController.assign);
 
-router.get('/assign', userController.assign);
+router.post('/assignPathway',  userController.checkIfLoggedIn, userController.assignPathway);
 
-router.post('/assignPathway',  userController.assignPathway);
+router.get('/disablePathways', userController.checkIfLoggedIn, (req, res) => {
+  userController.getPathways({ body: 0 }, res);
+});
 
-router.get('/getPathways', userController.getPathways);
+router.post('/removePathway', userController.checkIfLoggedIn, userController.removePathway);
 
-router.post('/removePathway', userController.removePathway);
+router.get('/enablePathways', userController.checkIfLoggedIn, (req, res) => {
+  userController.getPathways({ body: 1 }, res);
+});
+
+router.post('/enable', userController.checkIfLoggedIn, userController.enablePathway);
+
+router.get('/updateProgress', userController.checkIfLoggedIn, userController.getMentees);
+
+router.post('/updatePathways', userController.checkIfLoggedIn, userController.updatePathways);
+
+router.post('/updateStep', userController.checkIfLoggedIn, userController.updateStep);
+
+router.post('/getMenteePathways', userController.checkIfLoggedIn, userController.getUserPathways);
+
+router.get('/createPathway', userController.checkIfLoggedIn, (req, res) => {
+    const filePath = path.join(__dirname, '..', 'views', 'createPathwayForm.html');
+    res.sendFile(filePath);
+});
+
+router.post('/create', userController.checkIfLoggedIn, userController.createPathway);
 
 router.get('/msal', userController.msalLogin);
 

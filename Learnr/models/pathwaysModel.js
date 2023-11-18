@@ -64,7 +64,6 @@ exports.getMentorMentees = (mentorEmail, callback) => {
         else {
             if (results.length>0){
                 found = results;
-                console.log(results);
             }
             else {
                 found = false;
@@ -90,7 +89,6 @@ exports.getMenteePathwaysAll = (menteeEmail, callback) => {
         else {
             if (results.length>0){
                 found = results;
-                console.log(results);
             }
             else {
                 found = false;
@@ -116,7 +114,6 @@ exports.getMenteePathwaysSingle = (menteeEmail, pathway_id, callback) => {
         else {
             if (results.length>0){
                 found = results;
-                console.log(results);
             }
         }
         callback(found);
@@ -187,18 +184,104 @@ exports.disablePathway = (pathwayID, callback) => {
     });
 };
 
-exports.getPathways = (callback) => {
-    let call = false;
-    const retrieveQuery = 'SELECT * FROM pathways';
+exports.enablePathway = (pathwayID, callback) => {
+    const isEnabled = 1;
+    const updateQuery = 'UPDATE pathways SET isEnabled = ? WHERE pathwayID = ?';
 
-    connection.query(retrieveQuery, (err, results) => {
+    connection.query(updateQuery, [isEnabled, pathwayID], (err, results) => {
+        if (err) {
+            console.error('Error Removing Pathway:', err);
+            callback(false); // Call the callback with an error indicator
+        } else {
+            callback(true);  // Call the callback indicating success
+        }
+    });
+};
+
+exports.getEnabledPathways = (callback) => {
+    let call = false;
+    const retrieveQuery = 'SELECT * FROM pathways WHERE isEnabled = ?';
+
+    connection.query(retrieveQuery, 1, (err, results) => {
         if (err){
             console.error('Error Getting Pathways:', err);
         }
         else{
-            console.log(results);
             call = true;
             callback(results, call);
         }
-    })
+    });
+}
+
+exports.getDisabledPathways = (callback) => {
+    let call = false;
+    const retrieveQuery = 'SELECT * FROM pathways WHERE isEnabled = ?';
+
+    connection.query(retrieveQuery, 0, (err, results) => {
+        if (err){
+            console.error('Error Getting Pathways:', err);
+        }
+        else{
+            call = true;
+            callback(results, call);
+        }
+    });
+}
+
+exports.getMenteePathways = (menteeEmail, callback) => {
+
+    const retrieveQuery = 'SELECT menteepathways.menteeEmail, pathways.skill FROM menteepathways JOIN pathways ON menteepathways.pathwayID = pathways.pathwayID WHERE menteepathways.menteeEmail = ?';
+
+    connection.query(retrieveQuery, menteeEmail, (err, results) => {
+        if (err){
+            console.error('Error Getting Users:', err);
+        }
+        else{
+            callback(results);
+        }
+    });
+
+}
+
+exports.getPathwaySteps = (skill, callback) => {
+    const retrieveQuery = 'SELECT * FROM pathways WHERE skill = ?';
+
+    connection.query(retrieveQuery, skill, (err, results) =>{
+        if(err){
+            console.error('Error getting steps:', err);
+        }
+        else{
+            const numberOfSteps = results[0] ? results[0].numberOfSteps : null;
+            callback(numberOfSteps);
+        }
+    });
+}
+
+exports.getPathwayID = (skill, callback) => {
+    const retrieveQuery = 'SELECT * FROM pathways WHERE skill = ?';
+
+    connection.query(retrieveQuery, skill, (err, results) =>{
+        if(err){
+            console.error('Error getting steps:', err);
+        }
+        else{
+            const pathwayId = results[0] ? results[0].pathwayID : null;
+            callback(pathwayId);
+        }
+    });
+}
+
+exports.createPathway = (pathwayName, numberOfSteps, pathwayDescription, callback) => {
+    console.log(pathwayName, numberOfSteps, pathwayDescription);
+    const insertQuery = 'INSERT INTO pathways (skill, numberOfSteps, pathwayDescription) VALUES (?, ?, ?)';
+
+    connection.query(insertQuery, [pathwayName, numberOfSteps, pathwayDescription], (err, results) =>{
+        if(err){
+            console.error('Error Adding Pathway:', err);
+            callabck(false);
+        }
+        else{
+            callback(true);
+        }
+    });
 }

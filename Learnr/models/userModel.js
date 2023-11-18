@@ -138,7 +138,6 @@ exports.updateProfile = (email, firstName, lastName, position, bio, school, inte
 }
 
 exports.adminUpdatePassword = (email, newPassword, callback) => {
-
     const updateQuery = 'UPDATE users SET password = ? WHERE email = ?';
 
     connection.query(updateQuery, [newPassword, email] , (err, results) => {
@@ -152,12 +151,11 @@ exports.adminUpdatePassword = (email, newPassword, callback) => {
     });
 }
 
-exports.getMentees = (callback) => {
+exports.getMentees = (mentorEmail, callback) => {
 
-    const retrieveQuery = 'SELECT * FROM users WHERE userType = ?';
-    let userType = 'mentee';
+    const retrieveQuery = 'SELECT * FROM relationships WHERE mentorEmail = ?';
 
-    connection.query(retrieveQuery, userType, (err, results) => {
+    connection.query(retrieveQuery, mentorEmail, (err, results) => {
         if (err){
             console.error('Error Getting Users:', err);
         }
@@ -167,3 +165,19 @@ exports.getMentees = (callback) => {
     })
 
 }
+
+exports.changeStep = (menteeEmail, pathwayID, step, callback) => {
+    const updateQuery = 'UPDATE menteepathways SET step = ? WHERE menteeEmail = ? AND pathwayID = ?';
+
+    connection.query(updateQuery, [step.steps, menteeEmail, pathwayID], (err, results) => {
+        if (err){
+            console.error('Error Changing Pathway Step:', err);
+            callback(false);
+        }
+        else{
+            callback(true);
+        }
+    })
+
+}
+

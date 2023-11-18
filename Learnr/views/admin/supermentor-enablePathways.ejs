@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assign</title>
+    <title>Profile</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Set the background color of the entire website */
          /* Set the background color of the entire website */
          body {
             background-color: #0D041A;
@@ -96,7 +95,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="/#">
                                 <img src="icons/pathways_navbar_icons.svg" alt="Image" class="circle-img">
                                 Pathways
                             </a>
@@ -125,9 +124,9 @@
             </div>
         </nav>
         <main class="right-column">
-            <div id="assignForm">
-                <h2>Assign a Pathway</h2>
-                <form id="assignPathwayForm" action="/assignPathway" method="POST">
+            <div id="enablePathway">
+                <h2>Enable a Pathway</h2>
+                <form id="enablePathwayform" action="/enable" method="POST">
                     <p><label>
                         <strong>Select a Pathway:</strong>
                         <select name="pathway">
@@ -135,31 +134,19 @@
                                 <option value="<%= pathways.pathwayID %>"><%= pathways.skill %></option>
                             <% }); %>
                         </select>
-
-                    </label></p>
-
-                    <p><label>
-                        <strong>Select a Mentee:</strong>
-                        <select name="users">
-                            <% users.forEach(users => { %>
-                                <option value="<%= users.menteeEmail %>"><%= users.menteeEmail %></option>
-                            <% }); %>
-                        </select>
-                        
                     </label></p>
         
-                    <button type="submit" style="background-color: rgb(10, 184, 24); color: rgb(255, 255, 255);">Assign</button>
+                    <button type="submit" style="background-color: rgb(105, 245, 70); color: white;">Enable</button>
                 </form>
         
                 <br><br>
-        
-               
                 <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
             </div>
         
         </main>
-<script src = "/Learnr/Learnr/public/Profile.js"></script>
 </div>
 
-<!-- Bootstrap JS Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
+n
