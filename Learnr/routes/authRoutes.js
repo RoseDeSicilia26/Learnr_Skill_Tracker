@@ -12,8 +12,6 @@ router.get('/', (req, res) => {
 
 router.post('/login', userController.login);
 
-router.post('/deleteAccount', userController.checkIfLoggedIn, userController.deleteSelfAccount)
-
 router.get('/logout',  (req, res) => {
     userController.logout;
 
@@ -42,7 +40,7 @@ router.get('/skill_tracker', userController.checkIfLoggedIn,  (req, res) => {
   res.sendFile(filePath);
 });
 
-router.get('/pathway_:courseId', userController.checkIfLoggedIn, userController.getPathwayData);
+router.get('/pathways/pathway_:courseId', userController.checkIfLoggedIn, userController.getPathwayData);
 
 router.get('/profile', userController.checkIfLoggedIn, userController.getProfile);
 
