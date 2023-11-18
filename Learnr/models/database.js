@@ -5,7 +5,7 @@ const connection = mysql2.createConnection({
     host: 'localhost',
     port: '3306',         // Change this to your MySQL server hostname
     user: 'root',      // Change this to your MySQL username
-    password: 'root',  // Change this to your MySQL password
+    password: 'password',  // Change this to your MySQL password
     database: 'learnrdb'     // Change this to your database name
 });
 
