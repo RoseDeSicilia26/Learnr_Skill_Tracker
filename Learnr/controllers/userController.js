@@ -124,6 +124,18 @@ exports.login = (req, res) => {
     });
 }
 
+exports.deleteSelfAccount = (req, res) => {
+
+    userModel.deleteUserAccount(this.accountEmail, (result) => {
+        if (result) {
+            res.redirect("/");
+        } else {
+            res.json({ success: false, message: "Error deleting account." });
+        }
+    });
+};
+
+
 //reset values
 exports.logout = (req, res) => {
     this.accountEmail = ''; 
@@ -163,6 +175,8 @@ exports.getProfile = (req, res) => {
 // the skill tracker dashboard
 exports.getPathwayData = (req, res) => {
 
+    console.log(__dirname)
+
     const pathway_id = req.params.courseId;
     console.log(pathway_id)
 
@@ -189,6 +203,7 @@ exports.getPathwayData = (req, res) => {
 
 // the main dashbaord
 exports.getUserDashboard = (req, res) => {
+    console.log(__dirname);
 
     if (this.accountUserType == "mentor") {
         if (this.accountIsAdmin == 1) {

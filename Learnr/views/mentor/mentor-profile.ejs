@@ -5,76 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <!-- Add Bootstrap CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Set the background color of the entire website */
-         /* Set the background color of the entire website */
-         body {
+        body {
             background-color: #0D041A;
-            color: #E2E2F6; /* Set text color to white */
-            margin: 0; /* Remove default margin */
+            color: #E2E2F6;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
         }
-    
-        /* Apply a border with soft corners to both columns */
+
         .left-column, .right-column {
             border-radius: 10px;
             padding: 20px;
-            margin: 10px; /* Adjust margin for spacing */
+            margin: 10px;
             height: 1000px;
             min-height: 1000px;
         }
-    
-        /* Define the maximum width for the left column and minimum width for the right column */
+
         .left-column {
             width: 250px;
             max-width: 250px;
             min-width: 250px;
             background-color: #141236;
         }
-    
+
         .right-column {
             min-width: 700px;
             flex-grow: 1;
             max-width: 2000px;
         }
-    
-        /* Create a container to hold the two columns and apply some spacing */
+
         .container {
-            display: flex; /* Make the columns display side by side */
+            display: flex;
         }
-    
-        /* Customize the offcanvas */
+
         .offcanvas.show {
             transform: translateX(0);
             visibility: visible;
         }
-    
+
         .offcanvas-header {
             padding: 0px 0px 20px 0px;
         }
-    
-        /* Center both image and text horizontally */
+
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 8px; /* Add padding to the nav-link */
-            transition: background-color 0.3s, color 0.3s; /* Add a transition effect for background color and text color */
-            border-radius: 10px; /* Make the border corners more circular */
-            background-color: #141236; /* Set background color to match the page */
-            color: #E2E2F6; /* Text color for nav links */
-        }
-    
-        /* Apply a border and change background color on hover */
-        .nav-link:hover {
-            border: 1px solid #4672ED; /* Add a border on hover */
-            background-color: #4672ED; /* Change background color on hover */
-        }
-    
-        .circle-img {
-            margin-right: 10px; /* Add spacing between the image and text */
-            width: 30px; /* Set the maximum width for the SVG image */
+            padding: 8px;
+            transition: background-color 0.3s, color 0.3s;
+            border-radius: 10px;
+            background-color: #141236;
+            color: #E2E2F6;
         }
 
+        .nav-link:hover {
+            border: 1px solid #4672ED;
+            background-color: #4672ED;
+        }
+
+        .circle-img {
+            margin-right: 10px;
+            width: 30px;
+        }
+
+        .profile-heading {
+            text-align: center; /* Center the heading */
+            color: #E2E2F6; /* Set the text color */
+            margin-top:50px;
+            margin-bottom:30px;
+            /* Add any additional styling you need here */
+        }
+
+        
+        #userProfile img {
+            display: block; /* Makes the image a block-level element */
+            margin: 0 auto; /* Centers the image horizontally */
+            width: 200px; /* Adjust the width as needed */
+        }
+
+        .name-wrapper, .email-wrapper, .userType-wrapper {
+            text-align: center; /* Center align the text */
+        }
+
+        /* New Styles for Form Elements */
+        .profile-form {
+            background-color: #0D041A;
+            color: #E2E2F6;
+            padding: 20px;
+            border-radius: 50px;
+            align-items: center;
+        }
+
+
+        .profile-form input, .profile-form textarea {
+            background-color: #0D041A;
+            border: 2px solid #4672ED;
+            color: #E2E2F6;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border-radius: 25px;
+        }
+
+        .profile-form select {
+            background-color: #141236; /* Background color matching the left column */
+            border: 2px solid #4672ED; /* Border color like the SVG icons */
+            color: #E2E2F6; /* Text color */
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border-radius: 25px;
+            -webkit-appearance: none; /* Removes default styling on webkit browsers */
+            -moz-appearance: none; /* Removes default styling on Mozilla browsers */
+            appearance: none; /* Removes default styling for the select element */
+        }
+
+        /* Arrow indicator for the select element */
+        .profile-form select::-ms-expand {
+            display: none; /* Hides the default arrow in IE/Edge */
+        }
+
+        /* Custom arrow for the select element */
+        .profile-form select::after {
+            content: '\25BC';
+            color: #E2E2F6;
+            position: absolute;
+            right: 10px;
+            top: calc(50% - 3px); /* Center the arrow vertically */
+            pointer-events: none; /* Ensures the arrow doesn't interfere with the select functionality */
+        }
+
+
+        .submit-button {
+            background-color: #4672ED;
+            color: #E2E2F6;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-right: 10px;
+            
+        }
+
+        .submit-button:hover {
+            background-color: #3658B4;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: space-between; /* Aligns one button to the left and the other to the right */
+        }
+        .delete-account-btn {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px; /* Pill shaped */
+            cursor: pointer;
+        }
+
+        .delete-account-btn:hover {
+            background-color: darkred;
+        }
+
+        /* Styles for modal inputs and checkbox */
+        /* Override modal content background and text color */
+        .modal-content {
+            background-color: #0D041A;
+            color: #E2E2F6;
+            border-color: #4672ED; /* Border color */
+        }
+
+        /* Override modal header and footer background color */
+        .modal-header, .modal-footer {
+            border-color: #4672ED; /* Border color */
+        }
+
+        /* Override modal body background color */
+        .modal-body {
+            border-color: #4672ED; /* Border color */
+        }
+
+        .modal-body input, .modal-body .form-check {
+            margin-bottom: 10px;
+            background-color: #0D041A;
+            border-color: #4672ED; /* Border color */
+            color: #E2E2F6;
+        }
     </style>
 </head>
 <body>
@@ -125,57 +244,117 @@
             </div>
         </nav>
         <main class="right-column">
+            <h1 class="profile-heading">Profile</h1>
             <div id="userProfile">
-                <h2>User Profile</h2>
-        
-                <p><b>Email</b>: <%= userData.email %></p>
-                <p><b>User Type</b>: <%= userData.userType %></p>
-        
-                <form id="editProfileForm" action="/updateProfile" method="POST">
-                    <p><label>
-                        <strong>First Name:</strong>
-                        <input type="text" name="firstName" value="<%= userData.firstName || '' %>" placeholder="Add first name">
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>Last Name:</strong>
-                        <input type="text" name="lastName" value="<%= userData.lastName || '' %>" placeholder="Add last name">
-                    </label><br></p>
+                <!-- Octopus Icon -->
+                <img src="icons/octopus.svg" alt="Octopus Icon">
+                <!-- User Name and Email -->
+                <!-- User Name and Email -->
+                <div class="name-wrapper">
+                    <h5 id="userName"><%= userData.firstName + ' ' + userData.lastName %></h5>
+                </div>
 
-                    <p><label>
-                        <strong>Position:</strong>
-                        <select name="position">
-                            <option value="intern" <%= userData.position === 'intern' ? 'selected' : '' %>>Intern</option>
-                            <option value="fulltime" <%= userData.position === 'fulltime' ? 'selected' : '' %>>Full Time</option>
-                        </select>
-                    </label></p>
-        
-            
-                    <p><label>
-                        <strong>Bio:</strong>
-                        <textarea name="bio" placeholder="Add bio"><%= userData.bio || '' %></textarea>
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>School:</strong>
-                        <input type="text" name="school" value="<%= userData.school || '' %>" placeholder="Add school">
-                    </label><br></p>
-            
-                    <p><label>
-                        <strong>Interests:</strong>
-                        <input type="text" name="interests" value="<%= userData.interests || '' %>" placeholder="Add interests">
-                    </label><br></p>
-        
-                    <button type="submit" style="background-color: green; color: white;">Update Profile</button>
+                <div class="email-wrapper">
+                    <p id="userEmail"> <%= userData.email %></p>
+                </div>
+
+                <div class="userType-wrapper">
+                    <p id="userEmail"> <%= userData.userType %></p>
+                </div>
+
+                <!-- Profile Form -->
+                <form id="editProfileForm" class="profile-form" action="/updateProfile" method="POST">
+                    <!-- Position -->
+                    <select name="position">
+                        <option value="intern" <%= userData.position === 'intern' ? 'selected' : '' %>>Intern</option>
+                        <option value="fulltime" <%= userData.position === 'fulltime' ? 'selected' : '' %>>Full Time</option>
+                    </select>
+
+                    <!-- Bio -->
+                    <textarea name="bio" placeholder="Bio"><%= userData.bio || '' %></textarea>
+
+                    <!-- School -->
+                    <input type="text" name="school" value="<%= userData.school || '' %>" placeholder="School">
+
+                    <!-- Interests -->
+                    <input type="text" name="interests" value="<%= userData.interests || '' %>" placeholder="Interests">
+                    
+                    <!-- Save Button -->
+                    <div class="form-buttons">
+                        <!-- Submit Button -->
+                        <button type="submit" class="submit-button">Save</button>
+                        <!-- Delete Account Button -->
+                        <button type="button" class="delete-account-btn" data-toggle="modal" data-target="#deleteConfirmModal">Delete Account</button>
+                    </div>
                 </form>
-        
-                <br><br>
-                <button onclick="window.location.href='/dashboard'" style="background-color: white; color: black;">Return to Dashboard</button>
             </div>
-        
         </main>
-<script src = "/Learnr/Learnr/public/Profile.js"></script>
-</div>
+    </div> 
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="deleteAccountForm" action="/deleteAccount" method="POST">
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete your account?</p>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="confirmCheck" required>
+                            <label class="form-check-label" for="confirmCheck">I understand this action cannot be undone</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<!-- Bootstrap JS Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript for modal -->
+    <!-- <script>
+        document.getElementById('deleteAccountForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            var checkbox = document.getElementById('confirmCheck').checked;
+
+            if (!checkbox) {
+                alert("You must confirm that you understand this action cannot be undone.");
+                return;
+            }
+
+            // AJAX request to the server
+            fetch('/deleteAccount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Include any necessary data, e.g., user ID or email
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle response data
+                // For example, show a success message or redirect
+            })
+            .catch(error => {
+                // Handle any errors
+                alert("An error occurred while deleting the account.");
+            });
+        });
+
+    </script> -->
+</body>
+</html>
