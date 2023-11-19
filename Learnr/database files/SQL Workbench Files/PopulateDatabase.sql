@@ -71,7 +71,16 @@ INSERT INTO relationships (mentorEmail, menteeEmail) VALUES
 ('noah@mentor.com', 'olivia@mentee.com'),
 ('ava@mentor.com', 'logan@mentee.com'),
 ('ava@mentor.com', 'amelia@mentee.com'),
-('ava@mentor.com', 'ethan@mentee.com');
+('ava@mentor.com', 'ethan@mentee.com'),
+('admin1@admin.com', 'jack@mentee.com'),
+('admin1@admin.com', 'sophia@mentee.com'),
+('admin1@admin.com', 'lucas@mentee.com'),
+('admin2@admin.com', 'isabella@mentee.com'),
+('admin2@admin.com', 'mason@mentee.com'),
+('admin2@admin.com', 'olivia@mentee.com'),
+('admin@admin.com', 'logan@mentee.com'),
+('admin@admin.com', 'amelia@mentee.com'),
+('admin@admin.com', 'ethan@mentee.com');
 
 INSERT INTO menteepathways (menteeEmail, pathwayID, step) VALUES
 ('jack@mentee.com', 1, 1),

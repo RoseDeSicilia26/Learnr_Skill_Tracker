@@ -126,7 +126,7 @@ exports.login = (req, res) => {
 
 exports.deleteSelfAccount = (req, res) => {
 
-    userModel.deleteUserAccount(this.accountEmail, (result) => {
+    userModel.deleteSelfAccount(this.accountEmail, (result) => {
         if (result) {
             res.redirect("/");
         } else {
