@@ -137,7 +137,7 @@ exports.getUserData = (email, callback) => {
                     firstName: results[0].firstName,
                     lastName: results[0].lastName,
                     school: results[0].school,
-                    title: results[0].position,
+                    position: results[0].position,
                     email: results[0].email,
                     sex: results[0].sex,
                     bio: results[0].bio,
@@ -152,9 +152,9 @@ exports.getUserData = (email, callback) => {
     });
 };
 
-exports.updateProfile = (email, firstName, lastName, position, bio, school, interests, callback) => {
-    const updateQuery = 'UPDATE users SET firstName = ?, lastName = ?, position = ?, bio = ?, school = ?, interests = ? WHERE email = ?';
-    connection.query(updateQuery, [firstName, lastName, position, bio, school, interests, email], (err, results) => {
+exports.updateProfile = (email, position, bio, school, interests, callback) => {
+    const updateQuery = 'UPDATE users SET position = ?, bio = ?, school = ?, interests = ? WHERE email = ?';
+    connection.query(updateQuery, [position, bio, school, interests, email], (err, results) => {
         if (err) {
             console.error('Error updating profile:', err);
             callback(false);

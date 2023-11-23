@@ -265,10 +265,14 @@ exports.verifyIsAmin = (req, res) => {
 
 
 exports.updateProfile = (req, res) => {
-    const { firstName, lastName, position, bio, school, interests } = req.body;
+    const {position, bio, school, interests } = req.body;
+    console.log(position);
+    console.log(bio);
+    console.log(school);
+    console.log(interests);
     userModel.validateEmail(this.accountEmail, (exists) => {
         if(exists) {
-            userModel.updateProfile(this.accountEmail, firstName, lastName, position, bio, school, interests, (success) => {
+            userModel.updateProfile(this.accountEmail, position, bio, school, interests, (success) => {
                 if(success){
                     res.redirect("/profile");
                 }
