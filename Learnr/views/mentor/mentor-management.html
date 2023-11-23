@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentor Dashboard</title>
+    <title>Skill Tracker</title>
     <!-- Add Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* Set the background color of the entire website */
-         /* Set the background color of the entire website */
-         body {
+        body {
             background-color: #0D041A;
             color: #E2E2F6; /* Set text color to white */
             margin: 0; /* Remove default margin */
@@ -73,8 +72,63 @@
             margin-right: 10px; /* Add spacing between the image and text */
             width: 30px; /* Set the maximum width for the SVG image */
         }
+    
+        .tracker {
+            margin: 30px 0;
+        }
+    
+        .tracker-heading {
+            text-align: center; /* Center align the text */
+            margin-bottom: 1rem; /* Add some space below the heading */
+        }
+    
+        .tracker-card {
+            border: none;
+            border-radius: 20px;
+            background: #0D041A; /* Dark background */
+            margin-bottom: 20px;
+            border: 1px solid #4672ED;
+        }
+    
+        .progress {
+            background-color: #0D041A;
+            border: 1px solid #4672ED;
+            border-radius: 20px;
+            height: 30px;
+        }
+    
+        .progress-bar {
+            background-color: #4672ED; /* Lighter blue */
+            border-radius: 20px;
+            height: 30px;
+        }
+    
+        /* Utility classes for padding and margins */
+        .py-1 { padding-top: 1rem; padding-bottom: 1rem; }
+        .my-1 { margin-top: 1rem; margin-bottom: 1rem; }
+        .px-2 { padding-left: 2rem; padding-right: 2rem; }
+        .mx-2 { margin-left: 2rem; margin-right: 2rem; }
+    
+
+        /* course card */
+        .course-card {
+        border-radius: 20px;
+        border: 1px solid #4672ED;
+        margin: 30px 0px 30px 0px;
+        background-color: #0D041A;
+        color: #4672ED;
+        min-width: 600px;
+        flex-grow: 1;
+        max-width: 2000px;
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
 
     </style>
+    
 </head>
 <body>
     <div class="container">
@@ -91,7 +145,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/dashboard">
                                 <img src="icons/home_navbar_icons.svg" alt="Image" class="circle-img">
-                                Home
+                                Home 
                             </a>
                         </li>
                         <li class="nav-item">
@@ -107,12 +161,6 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/management">
-                                <img src="icons/management_navbar_icons.svg" alt="Image" class="circle-img">
-                                Management
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="/logout">
                                 <img src="icons/signout_navbar_icons.svg" alt="Image" class="circle-img">
                                 Sign Out
@@ -124,14 +172,46 @@
             </div>
         </nav>
         <main class="right-column">
-            <h1>Mentor Dashboard</h1>
-            <button onclick="location.href='/createPathway'">Create a Pathway</button>
-            <button onclick="location.href='/assign'">Assign a Pathway</button>
-            <button onclick="location.href='/updateProgress'">Update Mentee Progress</button>
-        </main>
-    </div>
+            <div class="tracker">
 
-    <!-- Add Bootstrap JS (Popper.js and Bootstrap.js) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.
-n
+                <div class="tracker-heading">
+                    <h1>Mentor Management</h1>
+                </div>
+                <br>
+                        <a href='/createPathway'> 
+                        <div class="card course-card">
+                            <div class="card-body">
+                                <h4 class="card-title">Create a pathway</h4>
+                            </div>
+                        </div>
+                        </a>
+                        
+                        <br><br>
+
+                        <a href='/assign'> 
+                            <div class="card course-card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Assign your mentee a pathway</h4>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <br><br>
+
+                        <a href='/updateProgress'> 
+                            <div class="card course-card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Update your mentee's pathway progress</h4>
+                                </div>
+                            </div>
+                        </a>
+
+                </div>
+
+        </main>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
